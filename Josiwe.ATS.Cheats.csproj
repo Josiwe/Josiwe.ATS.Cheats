@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Josiwe.ATS.Cheats</AssemblyName>
+    <Description>Cheat Mod for Against The Storm - By Josiwe</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+	  <StormPath>C:\\Program Files (x86)\\Steam\\steamapps\\common\\Against the Storm</StormPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.15" IncludeAssets="compile" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<Reference Include="$(StormPath)/Against the Storm_Data/Managed/Assembly-CSharp.dll" Publicize="true" />
+		<Reference Include="$(StormPath)/Against the Storm_Data/Managed/Newtonsoft.Json.dll" Publicize="true" />
+		<Reference Include="$(StormPath)/Against the Storm_Data/Managed/UniRx.dll" Publicize="true" />
+	</ItemGroup>
+  
+  <ItemGroup>
+    <None Include="assets\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="Deploy" AfterTargets="Build">
+	<ItemGroup>
+		<Assembly Include="$(OutputPath)\$(AssemblyName).dll" />
+        <Assets Include="$(OutputPath)\assets\*.*" />
+		<Files Include="$(SolutionDir)\*.json" />
+	</ItemGroup>
+
+	<Copy SourceFiles="@(Assembly)" DestinationFolder="$(StormPath)\BepInEx\plugins" />	
+    <Copy SourceFiles="@(Assets)" DestinationFolder="$(StormPath)\BepInEx\plugins\assets\" />
+	<Copy SourceFiles="@(Files)" DestinationFolder="$(StormPath)\BepInEx\plugins" />
+  </Target>
+</Project>
