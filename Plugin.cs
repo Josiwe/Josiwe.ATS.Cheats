@@ -97,20 +97,13 @@ namespace Josiwe.ATS.Cheats
 
             // for each regular reward we would normally collect, increment the granted tracker            
             int regularRewardsToCollect = __instance.CountRegularRewardsToCollect();
-            __instance.State.lastGrantedReputationReward += regularRewardsToCollect;
+            __instance.State.lastGrantedReputationReward = points;
 
             // now grant a wildcard pick instead
             for (int i = 0; i < regularRewardsToCollect; i++)
             {
                 WriteLog($"Generating new wildcard blueprint pick for reputation threshold {points}");
                 Serviceable.EffectsService.GrantWildcardPick(1);
-            }
-
-            // complete the rest of the original function
-            __instance.UpdateWaitingRewards();
-            if (__instance.State.currentPick == null)
-            {
-                __instance.GenerateNewPick();
             }
 
             return false; // do not run original function
