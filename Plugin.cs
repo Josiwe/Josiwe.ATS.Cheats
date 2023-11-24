@@ -9,11 +9,8 @@ using System.IO;
 using Eremite.View.Cameras;
 using UnityEngine;
 using System;
-using Eremite.Controller.Generator;
 using Eremite.Model.State;
 using Eremite.Services.Meta;
-using System.Reflection;
-using Eremite.Model.Configs;
 
 namespace Josiwe.ATS.Cheats
 {
@@ -23,13 +20,16 @@ namespace Josiwe.ATS.Cheats
         private Harmony harmony;
         public static Plugin Instance;
 
+        #region Awake
         private void Awake()
         {
             Instance = this;
             harmony = Harmony.CreateAndPatchAll(typeof(Plugin));
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-        }
+        } 
+        #endregion
 
+        #region Setup_PostPatch
         /// <summary>
         /// Increase zoom limit
         /// </summary>
@@ -60,7 +60,9 @@ namespace Josiwe.ATS.Cheats
                 __instance.zoomSmoothTime = __instance.zoomSmoothTime / zoomMultiplier;
             }
         }
+        #endregion
 
+        #region AddRewards_PrePatch
         ///// <summary>
         ///// TODO: modify order rewards
         ///// </summary>
@@ -77,8 +79,10 @@ namespace Josiwe.ATS.Cheats
         //        reward.Apply();
         //    }
         //    __instance.GetOrderModel(order).reputationReward.Apply();
-        //}
+        //} 
+        #endregion
 
+        #region AddReputation_PrePatch
         /// <summary>
         /// Replace the normal resolve logic
         /// </summary>
@@ -100,7 +104,9 @@ namespace Josiwe.ATS.Cheats
             Serviceable.ReputationService.AddReputationPoints(newChange, ReputationChangeSource.Resolve);
             __instance.ReputationGains[race] += newChange;
         }
+        #endregion
 
+        #region AddReputationPoints_PrePatch
         /// <summary>
         /// Replace normal reputation logic 
         /// </summary>
@@ -116,7 +122,7 @@ namespace Josiwe.ATS.Cheats
             if (!__instance.IsValidReputationGain(amount) || cheatConfig == null || Serviceable.BuildingsService.Seals.Count > 0)
                 return;
 
-            var newAmount =  amount * cheatConfig.ReputationMutiplier;
+            var newAmount = amount * cheatConfig.ReputationMutiplier;
             // rep stopgaps should change a bit based on events in the map, such as archaeologist ruins
             var maxReputation = Serviceable.BuildingsService.Altars.Count == 0
                 ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
@@ -127,7 +133,9 @@ namespace Josiwe.ATS.Cheats
             __instance.reputationChangedSubject.OnNext(new ReputationChange(newAmount, reason, type));
             __instance.CheckForWin();
         }
+        #endregion
 
+        #region AddReputationPenalty_PrePatch
         /// <summary>
         /// Replace normal impatience logic
         /// </summary>
@@ -152,7 +160,9 @@ namespace Josiwe.ATS.Cheats
             __instance.reputationPenaltyChangedSubject.OnNext(new ReputationChange(newAmount, reason, type));
             __instance.CheckForLoose();
         }
+        #endregion
 
+        #region GetRerollsLeft_PrePatch
         /// <summary>
         /// Enable infinite cornerstone rerolls 
         /// </summary>
@@ -168,8 +178,10 @@ namespace Josiwe.ATS.Cheats
             Serviceable.StateService.Gameplay.cornerstonesRerollsLeft = 99;
 
             return true; // now run the original method
-        }
+        } 
+        #endregion
 
+        #region GenerateRewards_PrePatch
         /// <summary>
         /// Generate extra options for each cornerstone pick
         /// </summary>
@@ -198,8 +210,10 @@ namespace Josiwe.ATS.Cheats
             }
 
             return true; // now run the original method
-        }
+        } 
+        #endregion
 
+        #region GenerateRewardsFor_PrePatch
         /// <summary>
         /// Generate extra cornerstone picks per season
         /// </summary>
@@ -216,13 +230,15 @@ namespace Josiwe.ATS.Cheats
             if (cheatConfig == null || cheatConfig.CornerstonePicksPerSeason <= 1)
                 return true; // run the original method
 
-            //WriteLog($"Generating extra cornerstone picks for season change: {cheatConfig.CornerstonePicksPerSeason}");
+            WriteLog($"Generating extra cornerstone picks for season change: {cheatConfig.CornerstonePicksPerSeason}");
             for (int i = 1; i < cheatConfig.CornerstonePicksPerSeason; i++)
                 __instance.Picks.Add(__instance.CreatePick(model, new List<EffectModel>(), viewConfiguration, isExtra));
 
             return true; // now run the original method
-        }
+        } 
+        #endregion
 
+        #region GetAllCurrentOptions_PrePatch
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GetAllCurrentOptions))]
         [HarmonyPrefix]
         public static bool GetAllCurrentOptions_PrePatch(ref List<EffectModel> __result)
@@ -231,61 +247,9 @@ namespace Josiwe.ATS.Cheats
 
             return false; // do not run the original game method
         }
+        #endregion
 
-        // Debugging the rerolls logic
-        //[HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.Reroll))]
-        //[HarmonyPrefix]
-        //public static bool Reroll_PrePatch(CornerstonesService __instance)
-        //{
-        //    var rerollsLeft = __instance.GetRerollsLeft();
-        //    WriteLog($"Verifying rerolls left is not negative: {rerollsLeft}");
-        //    if (DebugModes.Assertions)
-        //        Assert.IsTrue(rerollsLeft > 0);
-
-        //    RewardPickState currentPick = __instance.GetCurrentPick();
-        //    if (currentPick == null)
-        //        WriteLog($"currentPick IS NULL");
-
-        //    try
-        //    {
-        //        __instance.SendRerollAnalytics(currentPick);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        WriteLog(ex.Message);
-        //    }
-
-        //    WriteLog($"Total amount of rerolls left is: {Serviceable.StateService.Gameplay.cornerstonesRerollsLeft}.");
-        //    --Serviceable.StateService.Gameplay.cornerstonesRerollsLeft;
-        //    WriteLog($"Current pick seed is: {currentPick.seed}. It will increase by 1");
-        //    ++currentPick.seed;
-        //    var newTwitchId = Serviceable.TwitchService.GetUniqueTwitchId();
-        //    WriteLog($"New Twitch Service Id will be: {newTwitchId}.");
-        //    currentPick.id = Serviceable.TwitchService.GetUniqueTwitchId();
-        //    foreach (var item in __instance.GetCurrentPick().options)
-        //        WriteLog($"Current pick options include: {item}.");
-
-        //    Log.Info((object)string.Format("[Cor] Reroll for date {0}. Is extra: {1}", (object)currentPick.date, (object)currentPick.isExtra));
-        //    var newOptions = __instance.GenerateRewards(__instance.FindRewardsFor(currentPick.date, currentPick.isExtra), currentPick.seed, __instance.GetAllCurrentOptions());
-        //    foreach (var newItem in newOptions)
-        //        WriteLog($"New pick options will be: {newItem}");
-        //    __instance.GetCurrentPick().options = newOptions;
-
-        //    if (__instance.OnReroll == null)
-        //        WriteLog($"OnReroll IS NULL");
-        //    try
-        //    {
-        //        __instance.OnReroll.OnNext();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        WriteLog(ex.Message);
-        //    }
-
-        //    //return true; // now run the original method
-        //    return false; // do not run the original game method
-        //}
-
+        #region RewardForDecline_PrePatch
         /// <summary>
         /// Replace the normal reward for declining a cornerstone
         /// </summary>
@@ -301,7 +265,9 @@ namespace Josiwe.ATS.Cheats
             goods.amount *= cheatConfig.CashRewardMultiplier;
             Serviceable.StorageService.Main.Store(goods);
         }
+        #endregion
 
+        #region PrepareInitialPoints_PrePatch
         /// <summary>
         /// Replace initial 3 building picks at the start of a game with configurable wildcard picks
         /// </summary>
@@ -312,8 +278,14 @@ namespace Josiwe.ATS.Cheats
         private static bool PrepareInitialPoints_PrePatch(ReputationRewardsService __instance)
         {
             CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || cheatConfig.EnableWildcardBlueprints)
+
+            if (cheatConfig != null)
+                WriteLog("EnableWildcardBlueprints: " + cheatConfig.EnableWildcardBlueprints.ToString());
+
+            if (cheatConfig == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !cheatConfig.EnableWildcardBlueprints)
                 return true; // run the original game method
+
+            WriteLog("initialReputationPicksGranted: " + __instance.State.initialReputationPicksGranted.ToString());
 
             if (__instance.State.initialReputationPicksGranted == false)
             {
@@ -325,8 +297,10 @@ namespace Josiwe.ATS.Cheats
             // test code
             // Serviceable.ReputationService.AddReputationPoints(0.99f, ReputationChangeSource.Other);
             return false; // do not run the original game method
-        }
+        } 
+        #endregion
 
+        #region UpdateRegularReputationReward_PrePatch
         /// <summary>
         /// Replace normal reputation rewards (blueprint picks) with wildcard blueprint picks
         /// </summary>
@@ -337,6 +311,17 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool UpdateRegularReputationReward_PrePatch(ReputationRewardsService __instance, int points)
         {
+            // lastGrantedReputationReward is getting incremented elsewhere in the code,
+            // but inconsistently; I can't figure out where so for now I'm putting some
+            // logic here to fix the impossible situation where a reward has been 'granted'
+            // before reaching its reputation threshold. Without this, rewards would be
+            // skipped as the tracking variable would (sometimes) be incremented twice.
+
+            if (__instance.State.lastGrantedReputationReward > points)
+            {
+                __instance.State.lastGrantedReputationReward = points;
+            }
+
             CheatConfig cheatConfig = GetCheatConfig();
             if (cheatConfig == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !cheatConfig.EnableWildcardBlueprints)
                 return true; // run the original game method
@@ -347,6 +332,14 @@ namespace Josiwe.ATS.Cheats
 
             // for each regular reward we would normally collect, increment the granted tracker            
             int regularRewardsToCollect = __instance.CountRegularRewardsToCollect();
+
+            //WriteLog("----------");
+            //WriteLog($"Points: {points}");
+            //WriteLog($"Reputation.Value: {Serviceable.ReputationService.Reputation.Value}");
+            //WriteLog($"regularRewardsToCollect: {regularRewardsToCollect}");
+            //WriteLog($"lastGrantedReputationReward: {__instance.State.lastGrantedReputationReward}");
+            //WriteLog("----------");
+
             __instance.State.lastGrantedReputationReward = points;
 
             // now grant a wildcard pick instead
@@ -361,7 +354,9 @@ namespace Josiwe.ATS.Cheats
 
             return false; // do not run the original game method
         }
+        #endregion
 
+        #region HasRace
         //// TODO: newcomers logic rewiring
         //[HarmonyPatch(typeof(NewcomersService), nameof(NewcomersService.HasRace))]
         //[HarmonyPrefix]
@@ -380,8 +375,10 @@ namespace Josiwe.ATS.Cheats
         //    WriteLog($"GameController - new gameplay races count: {MB.Settings.gameplayRaces}.");
 
         //    return false; // do not run the original game method
-        //}
+        //} 
+        #endregion
 
+        #region GetUniqueRevealedRaces_PrePatch
         /// <summary>
         /// Replace the normal caravan generation logic (world map only)
         /// </summary>
@@ -411,8 +408,10 @@ namespace Josiwe.ATS.Cheats
             __result = __instance.rng.Next(1, 5);
 
             return false; // do not run the original game method
-        }
+        } 
+        #endregion
 
+        #region HookMainControllerSetup
         /// <summary>
         /// Needed for injection into the main game
         /// </summary>
@@ -425,11 +424,10 @@ namespace Josiwe.ATS.Cheats
             // Your main entry point to access this data will be `Serviceable.Settings` or `MainController.Instance.Settings`
             Instance.Logger.LogInfo($"Performing game initialization on behalf of {PluginInfo.PLUGIN_GUID}.");
             Instance.Logger.LogInfo($"The game has loaded {MainController.Instance.Settings.effects.Length} effects.");
+        } 
+        #endregion
 
-            //WriteLog($"MainController - gameplay races count: {MB.Settings.gameplayRaces}.");
-            //MB.Settings.gameplayRaces = 5;
-        }
-
+        #region HookEveryGameStart
         [HarmonyPatch(typeof(GameController), nameof(GameController.StartGame))]
         [HarmonyPostfix]
         private static void HookEveryGameStart()
@@ -438,8 +436,10 @@ namespace Josiwe.ATS.Cheats
             // So just use Harmony and save us all some time. This method will run after every game start
             var isNewGame = MB.GameSaveService.IsNewGame();
             WriteLog($"Entered a game. Is this a new game? {isNewGame}.");
-        }
+        } 
+        #endregion
 
+        #region GetCheatConfig
         private static CheatConfig GetCheatConfig()
         {
             CheatConfig cheatConfig = null;
@@ -468,10 +468,13 @@ namespace Josiwe.ATS.Cheats
 
             return cheatConfig;
         }
+        #endregion
 
+        #region WriteLog
         private static void WriteLog(string message)
         {
             Instance.Logger.LogInfo("Josiwe.ATS.Cheats:: " + message);
-        }
+        } 
+        #endregion
     }
 }
