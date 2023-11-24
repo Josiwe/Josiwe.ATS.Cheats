@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -22,9 +22,11 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<Reference Include="$(StormPath)/Against the Storm_Data/Managed/Assembly-CSharp.dll" Publicize="true" />
-		<Reference Include="$(StormPath)/Against the Storm_Data/Managed/Newtonsoft.Json.dll" Publicize="true" />
-		<Reference Include="$(StormPath)/Against the Storm_Data/Managed/UniRx.dll" Publicize="true" />
+		<Reference Include="$(StormPath)\Against the Storm_Data\Managed\UniRx.dll" Publicize="true" />
+		<Reference Include="$(StormPath)\Against the Storm_Data\Managed\Assembly-CSharp.dll" Publicize="true" />
+		<Reference Include="$(StormPath)\Against the Storm_Data\Managed\Newtonsoft.Json.dll" Publicize="true" />
+		<Reference Include="$(StormPath)\Against the Storm_Data\Managed\Sirenix.Serialization.dll" Publicize="true" />
+
 	</ItemGroup>
   
   <ItemGroup>
