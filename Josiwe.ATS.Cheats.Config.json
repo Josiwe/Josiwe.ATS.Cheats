@@ -1,5 +1,17 @@
 {
-  "EnableWildcardBlueprints": true,
-  "EnableInfiniteCornerstoneRerolls": true,
-  "CornerstonePicksPerSeason": 2
+    "MoarSeasonRewards": true,
+    "AllRacesInWorldMap": true,
+    "EnableWildcardBlueprints": true,
+    "EnableInfiniteCornerstoneRerolls": true,
+
+    "ResolveMultiplier": 0.0,
+    "ReputationMutiplier": 0.0,
+    "ImpatienceMultiplier": 1.0,
+
+    "ReputationStopgap": 1,
+    "ImpatienceStopgap": 2,
+    "ZoomLimitMultiplier": 7,
+    "BlueprintsMultiplier": 3,
+    "CashRewardMultiplier": 1000,
+    "CornerstonePicksPerSeason": 3
 }
