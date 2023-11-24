@@ -1,5 +1,7 @@
 # Against The Storm Cheats
 
+Update 11/24/23: Many new cheat powers added by user Kurdran - thank you so much! You should now consider this mod to be co-authored by both of us :)
+
 The compiled mod is meant to be loaded into the game with [BepInEx](https://github.com/BepInEx/BepInEx). 
 I tested with BepInEx_x64_5.4.22.0 on Windows 11 (https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip). 
 Simply download the loader and unzip it into your game directory. 
