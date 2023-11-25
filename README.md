@@ -48,7 +48,7 @@ to selectively enable cheats or modify how they work.
 **ReputationMutiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
 - used as a multiplier for reputation growth (blue bar at the bottom centre of the map game UI)
-- setting this to 0.0 will make it so that _**only**_ positive loyalty map events and uber happy peons can increase your reputation
+- setting this to 0.0 will make it so that _**only**_ loyalty map events and uber happy peons can increase your reputation
 - setting this to any number between 0.0 and 1.0 will make the reputation bar fill at a slower rate
 - setting this to any number higher than 1.0 will make the reputation bar fill at a faster rate
 - setting this to 1.0 uses the game's default logic
@@ -56,6 +56,7 @@ to selectively enable cheats or modify how they work.
 **ImpatienceMultiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
 - used as a multiplier for impatience growth (red bar at the bottom centre of the map game UI)
+- setting this to 0.0 will make it so that _**only**_ impatience map events can increase your reputation
 - setting this to any number between 0.0 and 1.0 will make the impatience bar fill at a slower rate
 - setting this to any number higher than 1.0 will make the impatience bar fill at a faster rate
 - setting this to 1.0 uses the game's default logic
@@ -97,7 +98,8 @@ to selectively enable cheats or modify how they work.
 - when set to 1 uses the game's default logic
 
 ### Ideas for explorers:
-- If you like exploring maps, and want to skip losing a game due to the queen's impatience buildup, just set _ImpatienceStopgap_ to any postive number above zero
-- If you also like exploring maps without loyalty choices/events/rewards ending your game early, just set the _ReputationStopgap_ to any positive number above zero
-	- Remember to save a loyalty choice/event/reward (or a few, depending on how high you set the reputation stopgap) so you can pause the game and turn them in at once to finish said map
+- If you like exploring maps, and want to avoid losing a game due to the queen's impatience buildup, just set _ImpatienceStopgap_ to any postive number above zero (just beware of map events that incerase it)
+	- With this setting, and a bit of luck/care on map events, it's possible to never lose a game =) 
+- If you also like exploring maps without loyalty choices/events/rewards ending your game early, just set the _ReputationStopgap_ to any positive number above zero (just beware of map events that incerase it)
+	- Remember to save a loyalty choice/event/reward (or a few, depending on how high you set the reputation stopgap) so you can pause the game and turn them in at once to finish said map!
 	- Archaeological dig site maps may require a _ReputationStopgap_ value of 2, if you want to finish all 3 events =)
