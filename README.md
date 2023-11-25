@@ -17,7 +17,7 @@ to selectively enable cheats or modify how they work.
 ## There's quite a few things you can configure in that json file which we hope you can tweak to your heart's content.
 
 **MoarSeasonRewards**
-	Boolean: _true or false_
+	- Boolean: _true or false_
 	- when set to true it maxes out the amount of items displayed for each cornerstone pick to 7 (the max the UI can display without major issues)
 	- when set to false uses the game's default logic
 **"AllRacesInWorldMap":**
