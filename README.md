@@ -13,7 +13,6 @@ inside the game directory. You might have to make this directory yourself, or ru
 You'll also need the json configuration file Josiwe.ATS.Cheats.Config.json in the same directory. This file can be edited
 to selectively enable cheats or modify how they work.
 
-
 ### There's quite a few things you can configure in that json file which we hope you can tweak to your heart's content.
 
 **MoarSeasonRewards**
@@ -29,14 +28,13 @@ to selectively enable cheats or modify how they work.
 
 **EnableWildcardBlueprints**
 - Boolean: _true or false_
-- when set to true it replaces the game's random blueprint logic with wildcard picks; can be used in conjunction with the BlueprintsMultiplier setting
+- when set to true it replaces the game's random blueprint logic with wildcard picks; can be used in conjunction with the _BlueprintsMultiplier_ setting
 - when set to false uses the game's default logic
 
 **EnableInfiniteCornerstoneRerolls**
 - Boolean: _true or false_
 - when set to true it allows the player to reroll cornerstones an infinite amount of times (also updates the UI to always show 99 rerolls left)
 - when set to false uses the game's default logic
-
 
 **ResolveMultiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
@@ -56,11 +54,10 @@ to selectively enable cheats or modify how they work.
 **ImpatienceMultiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
 - used as a multiplier for impatience growth (red bar at the bottom centre of the map game UI)
-- setting this to 0.0 will make it so that _**only**_ impatience map events can increase your reputation
+- setting this to 0.0 will make it so that _**only**_ impatience map events can increase your impatience
 - setting this to any number between 0.0 and 1.0 will make the impatience bar fill at a slower rate
 - setting this to any number higher than 1.0 will make the impatience bar fill at a faster rate
 - setting this to 1.0 uses the game's default logic
-
 
 **ReputationStopgap**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_

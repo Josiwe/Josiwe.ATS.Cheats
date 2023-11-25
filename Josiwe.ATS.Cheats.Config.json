@@ -9,7 +9,7 @@
     "ImpatienceMultiplier": 1.0,
 
     "ReputationStopgap": 1,
-    "ImpatienceStopgap": 2,
+    "ImpatienceStopgap": 1,
     "ZoomLimitMultiplier": 7,
     "BlueprintsMultiplier": 3,
     "CashRewardMultiplier": 1000,
