@@ -26,7 +26,7 @@ namespace Josiwe.ATS.Cheats
             Instance = this;
             harmony = Harmony.CreateAndPatchAll(typeof(Plugin));
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-        } 
+        }
         #endregion
 
         #region Setup_PostPatch
@@ -82,6 +82,49 @@ namespace Josiwe.ATS.Cheats
         //} 
         #endregion
 
+        #region GetSeasonLenghtRate_PrePatch
+        /// <summary>
+        /// Modify the length of each season
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="season"></param>
+        /// <param name="__result"></param
+        [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.GetSeasonLenghtRate))]
+        [HarmonyPrefix]
+        private static bool GetSeasonLenghtRate_PrePatch(EffectsService __instance, Season season, ref float __result)
+        {
+            CheatConfig cheatConfig = GetCheatConfig();
+            if (cheatConfig == null)
+                return true; // run the original game method
+
+            var stormMultiplier = cheatConfig.StormLengthMultiplier;
+            var drizzleMultiplier = cheatConfig.DrizzleLengthMultiplier;
+            var clearanceMultiplier = cheatConfig.ClearanceLengthMultiplier;
+            switch (season)
+            {
+                case Season.Drizzle:
+                    __result = drizzleMultiplier > 1
+                        ? __instance.Effects.drizzleLength * drizzleMultiplier
+                        : __instance.Effects.drizzleLength;
+                    break;
+                case Season.Clearance:
+                    __result = clearanceMultiplier > 1
+                        ? __instance.Effects.clearanceleLength * clearanceMultiplier
+                        : __instance.Effects.clearanceleLength;
+                    break;
+                case Season.Storm:
+                    __result = stormMultiplier > 1
+                       ? __instance.Effects.stormLength * stormMultiplier
+                       : __instance.Effects.stormLength;
+                    break;
+                default:
+                    throw new NotImplementedException(season.ToString());
+            }
+
+            return false; // do not run the original game method
+        }
+        #endregion
+
         #region AddReputation_PrePatch
         /// <summary>
         /// Replace the normal resolve logic
@@ -122,21 +165,16 @@ namespace Josiwe.ATS.Cheats
             if (!__instance.IsValidReputationGain(amount) || cheatConfig == null || Serviceable.BuildingsService.Seals.Count > 0)
                 return;
 
-            var biomeName = Serviceable.BiomeService.CurrentBiome.Name;
-            WriteLog(biomeName);
-            WriteLog(biomeName);
-            WriteLog(biomeName);
-            var newAmount = amount * cheatConfig.ReputationMutiplier;
             // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
             //var maxReputation = Serviceable.BuildingsService.Relics.Count == 0
             //    ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
             //    : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap - 1;
             // rep stopgaps should change a bit based on events in the map, such as archaeologist ruins
             // no I don't like hardcoded strings, but it'll have to do for now...
-            var maxReputation = Serviceable.BiomeService.CurrentBiome.Name != "Scarlet Orchard"
+            var maxReputation = Serviceable.BiomeService.CurrentBiome.Name.ToUpperInvariant() != "SCARLET ORCHARD"
                 ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
                 : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap - 1;
-
+            var newAmount = amount * cheatConfig.ReputationMutiplier;
             __instance.State.reputationSources[(int)type] += newAmount;
             __instance.State.reputation = Mathf.Clamp(__instance.State.reputation + newAmount, 0.0f, maxReputation);
             __instance.Reputation.Value = __instance.State.reputation;
@@ -185,16 +223,10 @@ namespace Josiwe.ATS.Cheats
             if (cheatConfig == null || !cheatConfig.EnableInfiniteCornerstoneRerolls)
                 return true; // run the original game method
 
-            var biomeName = ;
-            WriteLog(biomeName);
-            WriteLog(biomeName);
-            WriteLog(biomeName);
-
-
             Serviceable.StateService.Gameplay.cornerstonesRerollsLeft = 99;
 
             return true; // now run the original method
-        } 
+        }
         #endregion
 
         #region GenerateRewards_PrePatch
@@ -217,16 +249,18 @@ namespace Josiwe.ATS.Cheats
             if (model == null)
                 model = Serviceable.Biome.seasons.SeasonRewards.Find(srm => srm.year == __instance.GetCurrentPick().date.year);
 
-            var currentRewardsAmount = model.effectsTable.amounts.Random() + Serviceable.StateService.Effects.bonusSeasonalRewardsOptions + Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount;
+            var currentRewardsAmount = model.effectsTable.amounts.Random()
+                + Serviceable.StateService.Effects.bonusSeasonalRewardsOptions
+                + Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount;
             // 7 is the max the UI can display, so let's find the right number to add
             if (cheatConfig.MoarSeasonRewards && currentRewardsAmount < 7)
             {
-                //WriteLog($"Generating extra pick options for the cornerstone UI: {7 - currentRewardsAmount}");
+                WriteLog($"Generating {7 - currentRewardsAmount} extra pick options for the cornerstones UI");
                 Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount += 7 - currentRewardsAmount;
             }
 
             return true; // now run the original method
-        } 
+        }
         #endregion
 
         #region GenerateRewardsFor_PrePatch
@@ -246,12 +280,16 @@ namespace Josiwe.ATS.Cheats
             if (cheatConfig == null || cheatConfig.CornerstonePicksPerSeason <= 1)
                 return true; // run the original method
 
+            // debugging
             WriteLog($"Generating extra cornerstone picks for season change: {cheatConfig.CornerstonePicksPerSeason}");
+            WriteLog($"viewConfiguration: {viewConfiguration}");
+            WriteLog($"isExtra: {isExtra}");
+
             for (int i = 1; i < cheatConfig.CornerstonePicksPerSeason; i++)
                 __instance.Picks.Add(__instance.CreatePick(model, new List<EffectModel>(), viewConfiguration, isExtra));
 
             return true; // now run the original method
-        } 
+        }
         #endregion
 
         #region GetAllCurrentOptions_PrePatch
@@ -294,13 +332,10 @@ namespace Josiwe.ATS.Cheats
         private static bool PrepareInitialPoints_PrePatch(ReputationRewardsService __instance)
         {
             CheatConfig cheatConfig = GetCheatConfig();
-
-            if (cheatConfig != null)
-                WriteLog("EnableWildcardBlueprints: " + cheatConfig.EnableWildcardBlueprints.ToString());
-
             if (cheatConfig == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !cheatConfig.EnableWildcardBlueprints)
                 return true; // run the original game method
 
+            WriteLog("EnableWildcardBlueprints: " + cheatConfig.EnableWildcardBlueprints.ToString());
             WriteLog("initialReputationPicksGranted: " + __instance.State.initialReputationPicksGranted.ToString());
 
             if (__instance.State.initialReputationPicksGranted == false)
@@ -313,7 +348,7 @@ namespace Josiwe.ATS.Cheats
             // test code
             // Serviceable.ReputationService.AddReputationPoints(0.99f, ReputationChangeSource.Other);
             return false; // do not run the original game method
-        } 
+        }
         #endregion
 
         #region UpdateRegularReputationReward_PrePatch
@@ -424,7 +459,7 @@ namespace Josiwe.ATS.Cheats
             __result = __instance.rng.Next(1, 5);
 
             return false; // do not run the original game method
-        } 
+        }
         #endregion
 
         #region HookMainControllerSetup
@@ -440,7 +475,7 @@ namespace Josiwe.ATS.Cheats
             // Your main entry point to access this data will be `Serviceable.Settings` or `MainController.Instance.Settings`
             Instance.Logger.LogInfo($"Performing game initialization on behalf of {PluginInfo.PLUGIN_GUID}.");
             Instance.Logger.LogInfo($"The game has loaded {MainController.Instance.Settings.effects.Length} effects.");
-        } 
+        }
         #endregion
 
         #region HookEveryGameStart
@@ -452,7 +487,7 @@ namespace Josiwe.ATS.Cheats
             // So just use Harmony and save us all some time. This method will run after every game start
             var isNewGame = MB.GameSaveService.IsNewGame();
             WriteLog($"Entered a game. Is this a new game? {isNewGame}.");
-        } 
+        }
         #endregion
 
         #region GetCheatConfig
@@ -490,7 +525,7 @@ namespace Josiwe.ATS.Cheats
         private static void WriteLog(string message)
         {
             Instance.Logger.LogInfo("Josiwe.ATS.Cheats:: " + message);
-        } 
+        }
         #endregion
     }
 }

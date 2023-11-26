@@ -13,18 +13,34 @@ inside the game directory. You might have to make this directory yourself, or ru
 You'll also need the json configuration file Josiwe.ATS.Cheats.Config.json in the same directory. This file can be edited
 to selectively enable cheats or modify how they work.
 
-### There's quite a few things you can configure in that json file which we hope you can tweak to your heart's content.
+## There's quite a few things you can configure in that json file which we hope you can tweak to your heart's content.
+
+### Season Cheats
 
 **MoarSeasonRewards**
 - Boolean: _true or false_
 - when set to true it maxes out the amount of items displayed for each cornerstone pick to 7 (the max the UI can display without major issues)
 - when set to false uses the game's default logic
 
-**AllRacesInWorldMap**
-- Boolean: _true or false_
-- when set to true it should allow a more random choice of races when picking a cell in the world map
-- when set to false uses the game's default logic
-- experimental feature
+**StormLengthMultiplier**
+- Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
+- setting this to any number between 0.0 and 1.0 make storm seasons shorter
+- setting this to any number higher than 1.0 will make storm seasons longer
+- when set to 1 uses the game's default logic
+
+**DrizzleLengthMultiplier**
+- Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
+- setting this to any number between 0.0 and 1.0 make drizzle seasons shorter
+- setting this to any number higher than 1.0 will make drizzle seasons longer
+- when set to 1 uses the game's default logic
+
+**ClearanceLengthMultiplier**
+- Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
+- setting this to any number between 0.0 and 1.0 make clearance seasons shorter
+- setting this to any number higher than 1.0 will make clearance seasons longer
+- when set to 1 uses the game's default logic
+
+### Game Map Cheats
 
 **EnableWildcardBlueprints**
 - Boolean: _true or false_
@@ -94,7 +110,15 @@ to selectively enable cheats or modify how they work.
 - when set to any number greater than one, will allow a user to pick more cornerstones per season
 - when set to 1 uses the game's default logic
 
-### Ideas for explorers:
+### World Map Cheats
+
+**AllRacesInWorldMap**
+- Boolean: _true or false_
+- when set to true it should allow a more random choice of races when picking a cell in the world map
+- when set to false uses the game's default logic
+- experimental feature
+
+## Ideas for explorers:
 - If you like exploring maps, and want to avoid losing a game due to the queen's impatience buildup, just set _ImpatienceStopgap_ to any postive number above zero (just beware of map events that incerase it)
 	- With this setting, and a bit of luck/care on map events, it's possible to never lose a game =) 
 - If you also like exploring maps without loyalty choices/events/rewards ending your game early, just set the _ReputationStopgap_ to any positive number above zero (just beware of map events that incerase it)

@@ -7,6 +7,9 @@
     "ResolveMultiplier": 0.0,
     "ReputationMutiplier": 0.0,
     "ImpatienceMultiplier": 1.0,
+    "StormLengthMultiplier": 1,
+    "DrizzleLengthMultiplier": 2,
+    "ClearanceLengthMultiplier": 2,
 
     "ReputationStopgap": 1,
     "ImpatienceStopgap": 1,

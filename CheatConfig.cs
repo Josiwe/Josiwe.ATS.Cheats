@@ -12,6 +12,9 @@ namespace Josiwe.ATS.Cheats
         public float ResolveMultiplier { get; set; } = 0.0f;
         public float ReputationMutiplier { get; set; } = 0.0f;
         public float ImpatienceMultiplier { get; set; } = 1.0f;
+        public float StormLengthMultiplier { get; set; } = 1.0f;
+        public float DrizzleLengthMultiplier { get; set; } = 2.0f;
+        public float ClearanceLengthMultiplier { get; set; } = 2.0f;
 
         public int ReputationStopgap { get; set; } = 1;
         public int ImpatienceStopgap { get; set; } = 1;
