@@ -122,11 +122,21 @@ namespace Josiwe.ATS.Cheats
             if (!__instance.IsValidReputationGain(amount) || cheatConfig == null || Serviceable.BuildingsService.Seals.Count > 0)
                 return;
 
+            var biomeName = Serviceable.BiomeService.CurrentBiome.Name;
+            WriteLog(biomeName);
+            WriteLog(biomeName);
+            WriteLog(biomeName);
             var newAmount = amount * cheatConfig.ReputationMutiplier;
+            // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
+            //var maxReputation = Serviceable.BuildingsService.Relics.Count == 0
+            //    ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
+            //    : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap - 1;
             // rep stopgaps should change a bit based on events in the map, such as archaeologist ruins
-            var maxReputation = Serviceable.BuildingsService.Altars.Count == 0
+            // no I don't like hardcoded strings, but it'll have to do for now...
+            var maxReputation = Serviceable.BiomeService.CurrentBiome.Name != "Scarlet Orchard"
                 ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
                 : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap - 1;
+
             __instance.State.reputationSources[(int)type] += newAmount;
             __instance.State.reputation = Mathf.Clamp(__instance.State.reputation + newAmount, 0.0f, maxReputation);
             __instance.Reputation.Value = __instance.State.reputation;
@@ -174,6 +184,12 @@ namespace Josiwe.ATS.Cheats
             CheatConfig cheatConfig = GetCheatConfig();
             if (cheatConfig == null || !cheatConfig.EnableInfiniteCornerstoneRerolls)
                 return true; // run the original game method
+
+            var biomeName = ;
+            WriteLog(biomeName);
+            WriteLog(biomeName);
+            WriteLog(biomeName);
+
 
             Serviceable.StateService.Gameplay.cornerstonesRerollsLeft = 99;
 
