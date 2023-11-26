@@ -15,7 +15,7 @@ to selectively enable cheats or modify how they work.
 
 ## There's quite a few things you can configure in that json file which we hope you can tweak to your heart's content.
 
-### Season Cheats
+### Season Cheats:
 
 **MoarSeasonRewards**
 - Boolean: _true or false_
@@ -24,23 +24,23 @@ to selectively enable cheats or modify how they work.
 
 **StormLengthMultiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
-- setting this to any number between 0.0 and 1.0 make storm seasons shorter
+- setting this to any number between 0.0 and 1.0 will make storm seasons shorter
 - setting this to any number higher than 1.0 will make storm seasons longer
 - when set to 1 uses the game's default logic
 
 **DrizzleLengthMultiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
-- setting this to any number between 0.0 and 1.0 make drizzle seasons shorter
+- setting this to any number between 0.0 and 1.0 will make drizzle seasons shorter
 - setting this to any number higher than 1.0 will make drizzle seasons longer
 - when set to 1 uses the game's default logic
 
 **ClearanceLengthMultiplier**
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
-- setting this to any number between 0.0 and 1.0 make clearance seasons shorter
+- setting this to any number between 0.0 and 1.0 will make clearance seasons shorter
 - setting this to any number higher than 1.0 will make clearance seasons longer
 - when set to 1 uses the game's default logic
 
-### Game Map Cheats
+### Game Map Cheats:
 
 **EnableWildcardBlueprints**
 - Boolean: _true or false_
@@ -89,12 +89,6 @@ to selectively enable cheats or modify how they work.
 - most useful when exploration is your goal (see notes below)
 - setting this to 0 will allow the game's default logic to end your game when the max value for the map is reached (lose scenario)
 
-**ZoomLimitMultiplier**
-- Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
-- allows both the playable map and the world map to be zoomed out by a factor of X (the value you define)
-- great at 3, will work nicely with most machines
-- awesome at 7 or higher, but can slow things down to a crawl on low end machines
-
 **BlueprintsMultiplier**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
 - when set to any number greater than one, will allow a user to pick more blueprints (after either gaining a whole reputation point or buying the extra blueprint from a vendor)
@@ -110,7 +104,13 @@ to selectively enable cheats or modify how they work.
 - when set to any number greater than one, will allow a user to pick more cornerstones per season
 - when set to 1 uses the game's default logic
 
-### World Map Cheats
+### World Map Cheats:
+
+**ZoomLimitMultiplier**
+- Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
+- allows both the playable map and the world map to be zoomed out by a factor of X (the value you define)
+- great at 3, will work nicely with most machines
+- awesome at 7 or higher, but can slow things down to a crawl on low end machines
 
 **AllRacesInWorldMap**
 - Boolean: _true or false_
