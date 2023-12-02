@@ -78,14 +78,14 @@ to selectively enable cheats or modify how they work.
 **ReputationStopgap**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
 - used as a hard stop for reputation growth
-- setting this to any positive value greater than zero will prevent the reputation bar from filling up
+- setting this to any positive value greater than zero will prevent the reputation bar from filling up (only loyalty map events may increase it)
 - most useful when exploration is your goal (see notes below)
 - setting this to 0 will allow the game's default logic to end your game when the max value for the map is reached (win scenario)
 
 **ImpatienceStopgap**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
 - used as a hard stop for impatience growth
-- setting this to any positive value greater than zero will prevent the impatience bar from filling up
+- setting this to any positive value greater than zero will prevent the impatience bar from filling up (only impatience map events may increase it)
 - most useful when exploration is your goal (see notes below)
 - setting this to 0 will allow the game's default logic to end your game when the max value for the map is reached (lose scenario)
 
