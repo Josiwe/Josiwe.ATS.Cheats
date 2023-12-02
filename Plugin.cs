@@ -125,6 +125,32 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
+        //#region GetTraderSellPriceFor_PrePatch
+        ///// <summary>
+        ///// Modify trader prices
+        ///// </summary>
+        ///// <param name="__instance"></param>
+        ///// <param name="good"></param>
+        ///// <param name="__result"></param
+        //[HarmonyPatch(typeof(EffectsService), nameof(EffectsService.GetTraderSellPriceFor))]
+        //[HarmonyPrefix]
+        //public static bool GetTraderSellPriceFor_PrePatch(EffectsService __instance, GoodModel good, ref float __result)
+        //{
+        //    CheatConfig cheatConfig = GetCheatConfig();
+        //    if (cheatConfig == null)
+        //        return true; // run the original game method
+
+        //    WriteLog($"Difficulty Settings: {Serviceable.BiomeService.CurrentBiome.difficulty.GetDataFor(Serviceable.BiomeService.Difficulty).difficulty.GetDisplayName()}");
+
+        //    float num = __instance.Effects.traderGlobalSellPriceRate + __instance.MetaPerks.traderSellPriceBonusRates;
+        //    if (__instance.Effects.traderSellPriceRates.ContainsKey(good.Name))
+        //        num += __instance.Effects.traderSellPriceRates[good.Name];
+        //    __result = good.tradingSellValue * Mathf.Clamp(num, Serviceable.Settings.minTradingSellValueRate, Serviceable.Settings.maxTradingSellValueRate);
+
+        //    return false; // do not run the original game method
+        //}
+        //#endregion
+
         #region AddReputation_PrePatch
         /// <summary>
         /// Replace the normal resolve logic
@@ -134,18 +160,19 @@ namespace Josiwe.ATS.Cheats
         /// <param name="change"></param>
         [HarmonyPatch(typeof(ResolveReputationCalculator), nameof(ResolveReputationCalculator.AddReputation))]
         [HarmonyPrefix]
-        private static void AddReputation_PrePatch(ResolveReputationCalculator __instance, string race, float change)
+        private static bool AddReputation_PrePatch(ResolveReputationCalculator __instance, string race, float change)
         {
-            if (!Serviceable.ReputationService.IsValidReputationGain(change))
-                return;
-
             CheatConfig cheatConfig = GetCheatConfig();
-            // if the change isn't from an order reward use the multiplier
             // TODO: still can't find rep changes when a race is super hyped (i.e. blue)
-            var newChange = change != 1 ? change * cheatConfig.ResolveMultiplier : change;
+            if (!Serviceable.ReputationService.IsValidReputationGain(change) || cheatConfig == null)
+                return true; // run the original game method
 
+            // if the change isn't from an order reward use the multiplier
+            var newChange = change * cheatConfig.ResolveMultiplier;
             Serviceable.ReputationService.AddReputationPoints(newChange, ReputationChangeSource.Resolve);
             __instance.ReputationGains[race] += newChange;
+
+            return false; // do not run the original game method
         }
         #endregion
 
@@ -159,27 +186,33 @@ namespace Josiwe.ATS.Cheats
         /// <param name="reason"></param>
         [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.AddReputationPoints))]
         [HarmonyPrefix]
-        public static void AddReputationPoints_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, string reason = null)
+        public static bool AddReputationPoints_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, string reason = null)
         {
             CheatConfig cheatConfig = GetCheatConfig();
-            if (!__instance.IsValidReputationGain(amount) || cheatConfig == null || Serviceable.BuildingsService.Seals.Count > 0)
-                return;
+            if (!__instance.IsValidReputationGain(amount) || cheatConfig == null)
+                return true; // run the original game method
 
             // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
+            // comparing map names doesn't always work though... dunno why...
             //var maxReputation = Serviceable.BuildingsService.Relics.Count == 0
             //    ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
-            //    : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap - 1;
-            // rep stopgaps should change a bit based on events in the map, such as archaeologist ruins
-            // no I don't like hardcoded strings, but it'll have to do for now...
-            var maxReputation = Serviceable.BiomeService.CurrentBiome.Name.ToUpperInvariant() != "SCARLET ORCHARD"
-                ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
-                : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap - 1;
+            //    : (float)__instance.GetReputationToWin() - (cheatConfig.ReputationStopgap + 1);
+            //WriteLog($"Current biome is: {Serviceable.BiomeService.CurrentBiome.Name}");
+
             var newAmount = amount * cheatConfig.ReputationMutiplier;
+            // cap max reputation only for resolve gains - we do want players to win via map events and orders
+            var maxReputation = type != ReputationChangeSource.Resolve
+                                    ? (float)__instance.GetReputationToWin()
+                                    : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap;
+            //WriteLog($"Total: {__instance.GetReputationToWin()} - Type: {type} - Stopgap: {maxReputation}");
+            //WriteLog($"Reputation added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationSources[(int)type] += newAmount;
             __instance.State.reputation = Mathf.Clamp(__instance.State.reputation + newAmount, 0.0f, maxReputation);
             __instance.Reputation.Value = __instance.State.reputation;
             __instance.reputationChangedSubject.OnNext(new ReputationChange(newAmount, reason, type));
             __instance.CheckForWin();
+
+            return false; // do not run the original game method
         }
         #endregion
 
@@ -194,19 +227,22 @@ namespace Josiwe.ATS.Cheats
         /// <param name="reason"></param>
         [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.AddReputationPenalty))]
         [HarmonyPrefix]
-        public static void AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
+        public static bool AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
         {
-            if (Mathf.Approximately(amount, 0.0f) || !force && __instance.IsGameFinished())
-                return;
-
             CheatConfig cheatConfig = GetCheatConfig();
+            if (cheatConfig == null || Mathf.Approximately(amount, 0.0f) || !force && __instance.IsGameFinished())
+                return true; // run the original game method
 
             var newAmount = amount * cheatConfig.ImpatienceMultiplier;
-            var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - cheatConfig.ImpatienceStopgap;
+            var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - cheatConfig.ReputationStopgap;
+            //WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
+            //WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationPenalty = Mathf.Clamp(__instance.State.reputationPenalty + newAmount, 0.0f, maxImpatience);
             __instance.ReputationPenalty.Value = __instance.State.reputationPenalty;
             __instance.reputationPenaltyChangedSubject.OnNext(new ReputationChange(newAmount, reason, type));
             __instance.CheckForLoose();
+
+            return false; // do not run the original game method
         }
         #endregion
 
@@ -309,15 +345,18 @@ namespace Josiwe.ATS.Cheats
         /// </summary>
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.RewardForDecline))]
         [HarmonyPrefix]
-        private static void RewardForDecline_PrePatch()
+        private static bool RewardForDecline_PrePatch()
         {
             CheatConfig cheatConfig = GetCheatConfig();
+            // don't let some genious try out numbers below 1
             if (cheatConfig == null || cheatConfig.CashRewardMultiplier <= 1)
-                return;
+                return true; // run the original game method
 
             var goods = Serviceable.Biome.seasons.seasonRewardsDeclineGood.ToGood();
             goods.amount *= cheatConfig.CashRewardMultiplier;
             Serviceable.StorageService.Main.Store(goods);
+         
+            return false; // do not run the original game method
         }
         #endregion
 
