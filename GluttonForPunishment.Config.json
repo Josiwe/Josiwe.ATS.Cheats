@@ -1,25 +1,33 @@
 {
-    "MoarSeasonRewards": false,
-    "AllRacesInWorldMap": false,
-    "EnableWildcardBlueprints": false,
-    "EnableInfiniteCornerstoneRerolls": false,
+    "WorldMap": "Where you pick a tile to start a settlement in",
 
     "ZoomMultiplier": 7.0,
+    "AllRacesInWorldMap": false,
+
+
+    "Game Map": "Where you build, explore and forage",
+
+    "WildcardBlueprints": false,
+    "InfiniteCornerstoneRerolls": false,
     "ResolveMultiplier": 0.5,
     "ReputationMutiplier": 0.5,
     "ImpatienceMultiplier": 2.0,
+    "ReputationStopgap": 2,
+    "ImpatienceStopgap": 0,
+    "BlueprintsMultiplier": 1,
+    "CashRewardMultiplier": 0,
+    "CornerstonePicksPerSeason": 1,
+
+
+    "Season Rewards": "Odd planet, it only has 3 seasons...",
+
+    "MoarSeasonRewards": false,
     "StormLengthMultiplier": 2.0,
     "DrizzleLengthMultiplier": 0.5,
     "ClearanceLengthMultiplier": 0.5,
 
-    "ReputationStopgap": 0,
-    "ImpatienceStopgap": 0,
 
-    "BlueprintsMultiplier": 1,
-    "CashRewardMultiplier": 1,
-    "CornerstonePicksPerSeason": 1,
-
-    "Notes": "Each description contains hints (plucked from the game's code) about the defaul values.",
+    "Prestige Difficulties": "Each description contains hints (plucked from the game's code) about the defaul values.",
 
     "Prestige_2_Description": "Longer Storm - One of the seals is loosening its grip, leaking darkness upon this land. Storm season lasts 100% longer.",
     "Prestige_2_Amount": 1.5,

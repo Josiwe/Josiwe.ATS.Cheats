@@ -4,28 +4,33 @@ namespace Josiwe.ATS.Cheats
     {
         public CheatConfig() { }
 
-        public bool MoarSeasonRewards { get; set; } = false;
-        public bool AllRacesInWorldMap { get; set; } = false;
-        public bool EnableWildcardBlueprints { get; set; } = false;
-        public bool EnableInfiniteCornerstoneRerolls { get; set; } = false;
-
+        #region World Map
         public float ZoomMultiplier { get; set; } = 7.0f;
+        public bool AllRacesInWorldMap { get; set; } = false;
+        #endregion
+
+        #region Game Map
+        public bool WildcardBlueprints { get; set; } = false;
+        public bool InfiniteCornerstoneRerolls { get; set; } = false;
         public float ResolveMultiplier { get; set; } = 1.0f;
         public float ReputationMutiplier { get; set; } = 1.0f;
         public float ImpatienceMultiplier { get; set; } = 1.0f;
-        public float StormLengthMultiplier { get; set; } = 1.0f;
-        public float DrizzleLengthMultiplier { get; set; } = 1.0f;
-        public float ClearanceLengthMultiplier { get; set; } = 1.0f;
-
         public int ReputationStopgap { get; set; } = 0;
         public int ImpatienceStopgap { get; set; } = 0;
-
         public int BlueprintsMultiplier { get; set; } = 1;
         public int CashRewardMultiplier { get; set; } = 1;
         public int CornerstonePicksPerSeason { get; set; } = 1;
+        #endregion
+
+        #region Season Rewards
+        public bool MoarSeasonRewards { get; set; } = false;
+        public float StormLengthMultiplier { get; set; } = 1.0f;
+        public float DrizzleLengthMultiplier { get; set; } = 1.0f;
+        public float ClearanceLengthMultiplier { get; set; } = 1.0f;
+        #endregion
 
         // Each description contains hints (plucked from the game's code) about the defaul values.
-        #region Difficulty Modding
+        #region Prestige Difficulties
         // Longer Storm - One of the seals is loosening its grip, leaking darkness upon this land. Storm season lasts 100% longer.
         public float Prestige_2_Amount { get; set; } = 1.0f;
         // Higher Blueprints Reroll Cost - The Archivist assigned to your settlement is fiercely loyal to the Royal Court, so bribing him will be more expensive. Blueprint rerolls cost 10 Amber more.

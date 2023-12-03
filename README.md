@@ -11,7 +11,7 @@ The `.dll` file created by this mod (`Josiwe.ATS.Cheats.dll` by default) can the
 inside the game directory. You might have to make this directory yourself, or run the game once to have it made automatically.
 
 You'll also need the json configuration file `Josiwe.ATS.Cheats.Config.json` in the same directory. This file can be edited
-to selectively enable cheats or modify how they work.
+to selectively  cheats or modify how they work.
 
 We've also added example configs to fit a few playstyles! Feel free to replace single lines, or whole sections in the main config file:
 
@@ -21,7 +21,9 @@ We've also added example configs to fit a few playstyles! Feel free to replace s
 
 Feel free to mix and match them all, there's a million ways to have a blast with this game.
 
-# Cheats Info
+# Cheat Settings Data
+
+Here you'll find a detailed description of the type and effect of each setting in the config files, split by sections.
 
 ## World Map:
 
@@ -39,12 +41,12 @@ Feel free to mix and match them all, there's a million ways to have a blast with
 
 ## Game Map:
 
-**EnableWildcardBlueprints**
+**WildcardBlueprints**
 - Boolean: _true or false_
 - when set to true it replaces the game's random blueprint logic with wildcard picks; can be used in conjunction with the _BlueprintsMultiplier_ setting
 - when set to false uses the game's default logic
 
-**EnableInfiniteCornerstoneRerolls**
+**InfiniteCornerstoneRerolls**
 - Boolean: _true or false_
 - when set to true it allows the player to reroll cornerstones an infinite amount of times (also updates the UI to always show 99 rerolls left)
 - when set to false uses the game's default logic
@@ -127,8 +129,8 @@ Feel free to mix and match them all, there's a million ways to have a blast with
 - setting this to any number higher than 1.0 will make clearance seasons longer
 - setting this to 1.0 uses the game's default logic
 
-## Difficulties:
-(we're missing some, I know)
+## Difficulties: _(work in progress...)_
+
 **Prestige_2_Amount**
 <br>`Longer Storm - One of the seals is loosening its grip, leaking darkness upon this land. Storm season lasts 100% longer`
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
@@ -143,7 +145,7 @@ Feel free to mix and match them all, there's a million ways to have a blast with
 - setting this to 10 uses the game's default logic
 
 **Prestige_5_Amount**
-<br>`Faster Leaving - Villagers are less understanding than they used to be. They’re probably getting a bit spoiled by now. Villagers are 100% faster to leave if they have low Resolve`
+<br>`Faster Leaving - Villagers are less understanding than they used to be. They're probably getting a bit spoiled by now. Villagers are 100% faster to leave if they have low Resolve`
 - Float: _accepts any positive floating point number, usually only one or two decimals (i.e. 1.0, 0.3, 2.45)_
 - setting this to any number between 0.0 and 1.0 will the penalty a bit smaller
 - setting this to any number higher than 1.0 will make the penalty larger
@@ -188,13 +190,13 @@ Feel free to mix and match them all, there's a million ways to have a blast with
 <br>`Fewer Blueprints Options - The greedy Royal Archivist sold most of the blueprints to traders and fled the Citadel. You have 2 fewer blueprint choices`
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
 - when set to any number greater than one, will make the penalty larger
-- - setting this to 1 uses the game's default logic
+- setting this to 1 uses the game's default logic
 
 **Prestige_13_Amount**
 <br>`Fewer Cornerstones Options - The Royal Envoy comes to you with bad news. The Queen has restricted your cornerstone choices by 2`
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
 - when set to any number greater than one, will make the penalty larger
-- - setting this to 1 uses the game's default logic
+- setting this to 1 uses the game's default logic
 
 **Prestige_14_Amount**
 <br>`Lower Impatience Reduction - The Queen expects a lot from a viceroy of your rank. Impatience falls by 0.5 points less for every Reputation Point you gain`

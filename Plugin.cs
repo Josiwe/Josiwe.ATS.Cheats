@@ -59,25 +59,6 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region AddRewards_PrePatch
-        ///// <summary>
-        ///// TODO: modify order rewards
-        ///// </summary>
-        ///// <param name="__instance"></param>
-        ///// <param name="order"></param>
-        //[HarmonyPatch(typeof(OrdersService), nameof(OrdersService.AddRewards))]
-        //[HarmonyPrefix]
-        //public static void AddRewards_PrePatch(OrdersService __instance, OrderState order)
-        //{
-        //    foreach (EffectModel reward in __instance.GetOrderModel(order).GetRewards(order))
-        //    {
-        //        // TODO: play around with rewards and orders lol
-        //        reward.Apply();
-        //    }
-        //    __instance.GetOrderModel(order).reputationReward.Apply();
-        //} 
-        #endregion
-
         #region Effects Service Mods
         /// <summary>
         /// Modify the length of each season
@@ -128,19 +109,22 @@ namespace Josiwe.ATS.Cheats
                 {
                     // listing all early effects (only 3 total)
                     // ascension altar (Pioneer), fewer blueprint options (P12) and fewer initial blueprints (P16)
+                    WriteLog("--------------------");
                     WriteLog($"Early Effect: {modifier.effect.name} - {modifier.effect.GetType()}");
                     WriteLog($"{modifier.Name} - {modifier.effect.Description}");
-                    WriteLog($" - DisplayNameKey {modifier.effect.DisplayNameKey}");
-                    WriteLog($" - GetAmountText {modifier.effect.GetAmountText()}");
-                    WriteLog($" - GetRawAmountText {modifier.effect.GetRawAmountText()}");
-                    WriteLog($" - GetFloatAmount {modifier.effect.GetFloatAmount()}");
-                    WriteLog($" - GetIntAmount {modifier.effect.GetIntAmount()}");
+                    WriteLog($" - Display Name Key {modifier.effect.DisplayNameKey}");
+                    WriteLog($" - Amount Text {modifier.effect.GetAmountText()}");
+                    WriteLog($" - Raw Amount Text {modifier.effect.GetRawAmountText()}");
+                    WriteLog($" - Float Amount {modifier.effect.GetFloatAmount()}");
+                    WriteLog($" - Int Amount {modifier.effect.GetIntAmount()}");
+                    WriteLog("--------------------");
 
                     // modify the models for which we have config options
                     // always look at the log output to cast to the correct model
                     switch (modifier.effect.DisplayNameKey)
                     {
                         case "Effect_FewerBlueprintsOptions_Name":
+                            if (_configuration.Prestige_12_Amount < 0.0) break;
                             var p12Model = (ReputationRewardsBonusOptionsEffectModel)modifier.effect;
                             p12Model.amount = _configuration.Prestige_12_Amount; // change the amount
                             p12Model.ConsumeAsNonPerk();
@@ -183,78 +167,94 @@ namespace Josiwe.ATS.Cheats
                     if (!modifier.isEarlyEffect)
                     {
                         // listing all late effects
+                        WriteLog("--------------------");
                         WriteLog($"Late Effect:  {modifier.effect.name} - {modifier.effect.GetType()}");
                         WriteLog($"{modifier.Name} - {modifier.effect.Description}");
-                        WriteLog($" - DisplayNameKey {modifier.effect.DisplayNameKey}");
-                        WriteLog($" - GetAmountText {modifier.effect.GetAmountText()}");
-                        WriteLog($" - GetRawAmountText {modifier.effect.GetRawAmountText()}");
-                        WriteLog($" - GetFloatAmount {modifier.effect.GetFloatAmount()}");
-                        WriteLog($" - GetIntAmount {modifier.effect.GetIntAmount()}");
+                        WriteLog($" - Display Name Key {modifier.effect.DisplayNameKey}");
+                        WriteLog($" - Amount Text {modifier.effect.GetAmountText()}");
+                        WriteLog($" - Raw Amount Text {modifier.effect.GetRawAmountText()}");
+                        WriteLog($" - Float Amount {modifier.effect.GetFloatAmount()}");
+                        WriteLog($" - Int Amount {modifier.effect.GetIntAmount()}");
+                        WriteLog("--------------------");
 
                         // modify the models for which we have config options
+                        // always look at the log output to cast to the correct model
                         switch (modifier.effect.DisplayNameKey)
                         {
                             case "Effect_CrumblingSeal_Name":
+                                if (_configuration.Prestige_2_Amount < 0.0) break;
                                 var p2Model = (SeasonLengthEffectModel)modifier.effect;
                                 p2Model.amount = _configuration.Prestige_2_Amount;
                                 p2Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherBlueprintsRerollCost_Name":
+                                if (_configuration.Prestige_4_Amount < 0) break;
                                 var p4Model = (ReputationRewardsRerollCostEffectModel)modifier.effect;
                                 p4Model.amount = _configuration.Prestige_4_Amount;
                                 p4Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterLeaving_Name":
+                                if (_configuration.Prestige_5_Amount < 0.0) break;
                                 var p5Model = (LeavingRateEffectModel)modifier.effect;
                                 p5Model.amount = _configuration.Prestige_5_Amount;
                                 p5Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_WetSoil_Name":
+                                if (_configuration.Prestige_6_Amount < 0.0) break;
                                 var p6Model = (ConstructionCostEffectModel)modifier.effect;
                                 p6Model.amount = _configuration.Prestige_6_Amount;
                                 p6Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_Parasites_Name":
+                                if (_configuration.Prestige_7_Amount < 0.0) break;
                                 var p7Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
                                 p7Model.amount = _configuration.Prestige_7_Amount;
                                 p7Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherNeedsConsumptionRate_Name":
+                                if (_configuration.Prestige_8_Amount < 0.0) break;
                                 var p8Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
                                 p8Model.amount = _configuration.Prestige_8_Amount;
                                 p8Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LongerRelicsWorkingTime_Name":
+                                if (_configuration.Prestige_9_Amount > 0.0) break;
                                 var p9Model = (RelicsWorkingTimeRateEffectModel)modifier.effect;
                                 p9Model.amount = _configuration.Prestige_9_Amount;
                                 p9Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherTradersPrices_Name":
+                                if (_configuration.Prestige_10_Amount > 0.0) break;
                                 var p10Model = (TraderGlobalSellPriceEffectModel)modifier.effect;
                                 p10Model.amount = _configuration.Prestige_10_Amount;
                                 p10Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FewerCornerstonesOptions_Name":
+                                if (_configuration.Prestige_13_Amount < 0) break;
                                 var p13Model = (SeasonalRewardsBonusOptionsEffectModel)modifier.effect;
                                 p13Model.amount = _configuration.Prestige_13_Amount;
                                 p13Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LowerImpatienceReduction_Name":
+                                if (_configuration.Prestige_14_Amount < 0.0) break;
                                 var p14Model = (BonusReputationPenaltyPerReputationEffectModel)modifier.effect;
                                 p14Model.amount = _configuration.Prestige_14_Amount;
                                 p14Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_GlobalReputationTresholdIncrease_Name":
+                                if (_configuration.Prestige_15_Amount < 0) break;
                                 var p15Model = (BonusGlobalReputationTresholdIncreaseEffectModel)modifier.effect;
                                 p15Model.amount = _configuration.Prestige_15_Amount;
                                 p15Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_AscensionHungerMultiplier_Name":
+                                if (_configuration.Prestige_17_Amount < 0) break;
                                 var p17Model = (HungerMultiplierEffectModel)modifier.effect;
                                 p17Model.amount = _configuration.Prestige_17_Amount;
                                 p17Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterFuelSacrifice_Name":
+                                if (_configuration.Prestige_18_Amount > 0.0) break;
                                 var p18Model = (HearthSacraficeTimeEffectModel)modifier.effect;
                                 p18Model.amount = _configuration.Prestige_18_Amount;
                                 p18Model.ConsumeAsNonPerk();
@@ -288,12 +288,6 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region GetTraderSellPriceFor
-        // cannot patch GetTraderSellPriceFor cause there's 2 of them with the same name and bepinx can't distinguish between them... =(
-        //public static float GetTraderSellPriceFor(string goodName, float amount)
-        //public static float GetTraderSellPriceFor(GoodModel good)
-        #endregion
-
         #region AddReputation_PrePatch
         /// <summary>
         /// Replace the normal resolve logic
@@ -306,7 +300,9 @@ namespace Josiwe.ATS.Cheats
         private static bool AddReputation_PrePatch(ResolveReputationCalculator __instance, string race, float change)
         {
             // TODO: still can't find rep changes when a race is super hyped (i.e. blue)
-            if (!Serviceable.ReputationService.IsValidReputationGain(change) || _configuration == null)
+            if (!Serviceable.ReputationService.IsValidReputationGain(change)
+                || _configuration == null
+                || _configuration.ResolveMultiplier < 0)
                 return true; // run the original game method
 
             // if the change isn't from an order reward use the multiplier
@@ -330,7 +326,10 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool AddReputationPoints_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, string reason = null)
         {
-            if (!__instance.IsValidReputationGain(amount) || _configuration == null)
+            if (!__instance.IsValidReputationGain(amount)
+                || _configuration == null
+                || _configuration.ReputationMutiplier < 0
+                || _configuration.ReputationStopgap < 0)
                 return true; // run the original game method
 
             // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
@@ -371,7 +370,12 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
         {
-            if (_configuration == null || Mathf.Approximately(amount, 0.0f) || !force && __instance.IsGameFinished())
+            if (Mathf.Approximately(amount, 0.0f)
+                || !force
+                && __instance.IsGameFinished()
+                || _configuration == null
+                || _configuration.ImpatienceMultiplier < 0
+                || _configuration.ImpatienceStopgap < 0)
                 return true; // run the original game method
 
             var newAmount = amount * _configuration.ImpatienceMultiplier;
@@ -390,14 +394,15 @@ namespace Josiwe.ATS.Cheats
 
         #region GetRerollsLeft_PrePatch
         /// <summary>
-        /// Enable infinite cornerstone rerolls 
+        /// Infinite cornerstone rerolls 
         /// </summary>
         /// <returns></returns>
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GetRerollsLeft))]
         [HarmonyPrefix]
         public static bool GetRerollsLeft_PrePatch()
         {
-            if (_configuration == null || !_configuration.EnableInfiniteCornerstoneRerolls)
+            if (_configuration == null
+                || !_configuration.InfiniteCornerstoneRerolls)
                 return true; // run the original game method
 
             Serviceable.StateService.Gameplay.cornerstonesRerollsLeft = 99;
@@ -418,7 +423,8 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool GenerateRewards_PrePatch(CornerstonesService __instance, ref SeasonRewardModel model, int seed, List<EffectModel> toExclude)
         {
-            if (_configuration == null)
+            if (_configuration == null
+                || !_configuration.MoarSeasonRewards)
                 return true; // run the original method
 
             // when the model is null it's replaced with random model in the cornerstone service, this is my hacky patch
@@ -429,7 +435,7 @@ namespace Josiwe.ATS.Cheats
                 + Serviceable.StateService.Effects.bonusSeasonalRewardsOptions
                 + Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount;
             // 7 is the max the UI can display, so let's find the right number to add
-            if (_configuration.MoarSeasonRewards && currentRewardsAmount < 7)
+            if (currentRewardsAmount < 7)
             {
                 WriteLog($"Generating {7 - currentRewardsAmount} extra pick options for the cornerstones UI");
                 Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount += 7 - currentRewardsAmount;
@@ -452,13 +458,14 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool GenerateRewardsFor_PrePatch(CornerstonesService __instance, SeasonRewardModel model, string viewConfiguration, bool isExtra)
         {
-            if (_configuration == null || _configuration.CornerstonePicksPerSeason <= 1)
+            if (_configuration == null
+                || _configuration.CornerstonePicksPerSeason <= 1)
                 return true; // run the original method
 
             // debugging
             WriteLog($"Generating extra cornerstone picks for season change: {_configuration.CornerstonePicksPerSeason}");
-            WriteLog($"viewConfiguration: {viewConfiguration}");
-            WriteLog($"isExtra: {isExtra}");
+            //WriteLog($"viewConfiguration: {viewConfiguration}");
+            //WriteLog($"isExtra: {isExtra}");
 
             for (int i = 1; i < _configuration.CornerstonePicksPerSeason; i++)
                 __instance.Picks.Add(__instance.CreatePick(model, new List<EffectModel>(), viewConfiguration, isExtra));
@@ -472,6 +479,10 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool GetAllCurrentOptions_PrePatch(ref List<EffectModel> __result)
         {
+            if (_configuration == null
+                || !_configuration.MoarSeasonRewards)
+                return true; // run the original method
+
             __result = new List<EffectModel>();
 
             return false; // do not run the original game method
@@ -486,8 +497,8 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool RewardForDecline_PrePatch()
         {
-            // don't let some genious try out numbers below 1
-            if (_configuration == null || _configuration.CashRewardMultiplier <= 1)
+            if (_configuration == null
+                || _configuration.CashRewardMultiplier < 0)
                 return true; // run the original game method
 
             var goods = Serviceable.Biome.seasons.seasonRewardsDeclineGood.ToGood();
@@ -508,11 +519,14 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool PrepareInitialPoints_PrePatch(ReputationRewardsService __instance)
         {
-            if (_configuration == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !_configuration.EnableWildcardBlueprints)
+            if (_configuration == null
+                || !_configuration.WildcardBlueprints
+                || _configuration.BlueprintsMultiplier < 0
+                || MB.TutorialService.IsAnyTutorial(GameMB.Biome))
                 return true; // run the original game method
 
-            WriteLog("EnableWildcardBlueprints: " + _configuration.EnableWildcardBlueprints.ToString());
-            WriteLog("initialReputationPicksGranted: " + __instance.State.initialReputationPicksGranted.ToString());
+            WriteLog("WildcardBlueprints: " + _configuration.WildcardBlueprints.ToString());
+            //WriteLog("Initial Reputation Picks Granted: " + __instance.State.initialReputationPicksGranted.ToString());
 
             if (__instance.State.initialReputationPicksGranted == false)
             {
@@ -521,8 +535,6 @@ namespace Josiwe.ATS.Cheats
                 Serviceable.EffectsService.GrantWildcardPick(_configuration.BlueprintsMultiplier);
             }
 
-            // test code
-            // Serviceable.ReputationService.AddReputationPoints(0.99f, ReputationChangeSource.Other);
             return false; // do not run the original game method
         }
         #endregion
@@ -543,13 +555,12 @@ namespace Josiwe.ATS.Cheats
             // logic here to fix the impossible situation where a reward has been 'granted'
             // before reaching its reputation threshold. Without this, rewards would be
             // skipped as the tracking variable would (sometimes) be incremented twice.
-
             if (__instance.State.lastGrantedReputationReward > points)
-            {
                 __instance.State.lastGrantedReputationReward = points;
-            }
 
-            if (_configuration == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !_configuration.EnableWildcardBlueprints)
+            if (_configuration == null
+                || !_configuration.WildcardBlueprints
+                || MB.TutorialService.IsAnyTutorial(GameMB.Biome))
                 return true; // run the original game method
 
             // copied from original function
@@ -559,12 +570,12 @@ namespace Josiwe.ATS.Cheats
             // for each regular reward we would normally collect, increment the granted tracker            
             int regularRewardsToCollect = __instance.CountRegularRewardsToCollect();
 
-            //WriteLog("----------");
+            //WriteLog("--------------------");
             //WriteLog($"Points: {points}");
             //WriteLog($"Reputation.Value: {Serviceable.ReputationService.Reputation.Value}");
             //WriteLog($"regularRewardsToCollect: {regularRewardsToCollect}");
             //WriteLog($"lastGrantedReputationReward: {__instance.State.lastGrantedReputationReward}");
-            //WriteLog("----------");
+            //WriteLog("--------------------");
 
             __instance.State.lastGrantedReputationReward = points;
 
@@ -582,7 +593,60 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region HasRace
+        #region GetUniqueRevealedRaces_PrePatch
+        /// <summary>
+        /// Replace the normal caravan generation logic (world map only)
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="current"></param>
+        /// <param name="__result"></param>
+        /// <returns></returns>
+        [HarmonyPatch(typeof(CaravanGenerator), nameof(CaravanGenerator.GetUniqueRevealedRaces))]
+        [HarmonyPrefix]
+        protected static bool GetUniqueRevealedRaces_PrePatch(CaravanGenerator __instance, List<EmbarkCaravanState> current, ref int __result)
+        {
+            if (_configuration == null
+                || !_configuration.AllRacesInWorldMap)
+                return true; // run the original game method
+
+            for (int index = 0; index < 10; ++index)
+            {
+                int revealedRaces = __instance.rng.Next(1, 5);
+                if (__instance.IsUnique(revealedRaces, current))
+                {
+                    __result = revealedRaces;
+
+                    return false; // do not run the original game method
+                }
+
+            }
+            __result = __instance.rng.Next(1, 5);
+
+            return false; // do not run the original game method
+        }
+        #endregion
+
+        #region Work in progress items and other ideas
+        // TODO: Impatience gain when failing timed missions
+        // Serviceable.ReputationService.AddReputationPoints(-0.99f, ReputationChangeSource.Other);
+
+        // cannot patch GetTraderSellPriceFor cause there's 2 of them with the same name and bepinx can't distinguish between them... =(
+        //public static float GetTraderSellPriceFor(string goodName, float amount)
+        //public static float GetTraderSellPriceFor(GoodModel good)
+
+        // TODO: modify order rewards
+        //[HarmonyPatch(typeof(OrdersService), nameof(OrdersService.AddRewards))]
+        //[HarmonyPrefix]
+        //public static void AddRewards_PrePatch(OrdersService __instance, OrderState order)
+        //{
+        //    foreach (EffectModel reward in __instance.GetOrderModel(order).GetRewards(order))
+        //    {
+        //        // TODO: play around with rewards and orders lol
+        //        reward.Apply();
+        //    }
+        //    __instance.GetOrderModel(order).reputationReward.Apply();
+        //} 
+
         //// TODO: newcomers logic rewiring
         //[HarmonyPatch(typeof(NewcomersService), nameof(NewcomersService.HasRace))]
         //[HarmonyPrefix]
@@ -602,38 +666,6 @@ namespace Josiwe.ATS.Cheats
 
         //    return false; // do not run the original game method
         //} 
-        #endregion
-
-        #region GetUniqueRevealedRaces_PrePatch
-        /// <summary>
-        /// Replace the normal caravan generation logic (world map only)
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="current"></param>
-        /// <param name="__result"></param>
-        /// <returns></returns>
-        [HarmonyPatch(typeof(CaravanGenerator), nameof(CaravanGenerator.GetUniqueRevealedRaces))]
-        [HarmonyPrefix]
-        protected static bool GetUniqueRevealedRaces_PrePatch(CaravanGenerator __instance, List<EmbarkCaravanState> current, ref int __result)
-        {
-            if (_configuration == null || !_configuration.AllRacesInWorldMap)
-                return true; // run the original game method
-
-            for (int index = 0; index < 10; ++index)
-            {
-                int revealedRaces = __instance.rng.Next(1, 5);
-                if (__instance.IsUnique(revealedRaces, current))
-                {
-                    __result = revealedRaces;
-
-                    return false; // do not run the original game method
-                }
-
-            }
-            __result = __instance.rng.Next(1, 5);
-
-            return false; // do not run the original game method
-        }
         #endregion
 
         #region HookMainControllerSetup

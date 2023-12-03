@@ -1,25 +1,33 @@
 {
-    "MoarSeasonRewards": true,
-    "AllRacesInWorldMap": true,
-    "EnableWildcardBlueprints": true,
-    "EnableInfiniteCornerstoneRerolls": true,
+    "WorldMap": "Where you pick a tile to start a settlement in",
 
     "ZoomMultiplier": 7.0,
+    "AllRacesInWorldMap": true,
+
+
+    "Game Map": "Where you build, explore and forage",
+
+    "WildcardBlueprints": true,
+    "InfiniteCornerstoneRerolls": true,
     "ResolveMultiplier": 1.0,
     "ReputationMutiplier": 1.0,
     "ImpatienceMultiplier": 1.0,
+    "ReputationStopgap": 1,
+    "ImpatienceStopgap": 1,
+    "BlueprintsMultiplier": 3,
+    "CashRewardMultiplier": 1000,
+    "CornerstonePicksPerSeason": 3,
+
+
+    "Season Rewards": "Odd planet, it only has 3 seasons...",
+
+    "MoarSeasonRewards": true,
     "StormLengthMultiplier": 2.0,
     "DrizzleLengthMultiplier": 2.0,
     "ClearanceLengthMultiplier": 2.0,
 
-    "ReputationStopgap": 1,
-    "ImpatienceStopgap": 1,
 
-    "BlueprintsMultiplier": 3,
-    "CashRewardMultiplier": 100,
-    "CornerstonePicksPerSeason": 5,
-
-    "Notes": "Each description contains hints (plucked from the game's code) about the defaul values.",
+    "Prestige Difficulties": "Each description contains hints (plucked from the game's code) about the defaul values.",
 
     "Prestige_2_Description": "Longer Storm - One of the seals is loosening its grip, leaking darkness upon this land. Storm season lasts 100% longer.",
     "Prestige_2_Amount": 1.0,
@@ -36,7 +44,7 @@
     "Prestige_9_Description": "Longer Relics Working Time - Villagers are reluctant to venture into Dangerous Glades. Scouts work 33% slower on Glade Events.",
     "Prestige_9_Amount": -0.33,
     "Prestige_10_Description": "Higher Traders Prices - Traders gossip about you doing pretty well lately. All your goods are worth 50% less to traders.",
-    "Prestige_10_Amount": -0.25,
+    "Prestige_10_Amount": -0.5,
     "Prestige_12_Description": "Fewer Blueprints Options - The greedy Royal Archivist sold most of the blueprints to traders and fled the Citadel. You have 2 fewer blueprint choices.",
     "Prestige_12_Amount": 1,
     "Prestige_13_Description": "Fewer Cornerstones Options - The Royal Envoy comes to you with bad news. The Queen has restricted your cornerstone choices by 2.",
