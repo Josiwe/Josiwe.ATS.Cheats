@@ -12,6 +12,7 @@ using System;
 using Eremite.Model.State;
 using Eremite.Services.Meta;
 using Eremite.Model.Effects;
+using Newtonsoft.Json;
 
 namespace Josiwe.ATS.Cheats
 {
@@ -127,8 +128,8 @@ namespace Josiwe.ATS.Cheats
                 {
                     // listing all early effects (only 3 total)
                     // ascension altar (Pioneer), fewer blueprint options (P12) and fewer initial blueprints (P16)
-                    WriteLog($"Early Effect: {modifier.Name} - {modifier.effect.name} - {modifier.effect.GetType()}");
-                    WriteLog($"{modifier.effect.Description}");
+                    WriteLog($"Early Effect: {modifier.effect.name} - {modifier.effect.GetType()}");
+                    WriteLog($"{modifier.Name} - {modifier.effect.Description}");
                     WriteLog($" - DisplayNameKey {modifier.effect.DisplayNameKey}");
                     WriteLog($" - GetAmountText {modifier.effect.GetAmountText()}");
                     WriteLog($" - GetRawAmountText {modifier.effect.GetRawAmountText()}");
@@ -141,7 +142,7 @@ namespace Josiwe.ATS.Cheats
                     {
                         case "Effect_FewerBlueprintsOptions_Name":
                             var p12Model = (ReputationRewardsBonusOptionsEffectModel)modifier.effect;
-                            p12Model.amount = _configuration.P12Amount; // change the amount
+                            p12Model.amount = _configuration.Prestige_12_Amount; // change the amount
                             p12Model.ConsumeAsNonPerk();
                             break;
                         // nothing to change on these... yet...
@@ -182,8 +183,8 @@ namespace Josiwe.ATS.Cheats
                     if (!modifier.isEarlyEffect)
                     {
                         // listing all late effects
-                        WriteLog($"Late Effect: {modifier.Name} - {modifier.effect.name} - {modifier.effect.GetType()}");
-                        WriteLog($"{modifier.effect.Description}");
+                        WriteLog($"Late Effect:  {modifier.effect.name} - {modifier.effect.GetType()}");
+                        WriteLog($"{modifier.Name} - {modifier.effect.Description}");
                         WriteLog($" - DisplayNameKey {modifier.effect.DisplayNameKey}");
                         WriteLog($" - GetAmountText {modifier.effect.GetAmountText()}");
                         WriteLog($" - GetRawAmountText {modifier.effect.GetRawAmountText()}");
@@ -195,67 +196,67 @@ namespace Josiwe.ATS.Cheats
                         {
                             case "Effect_CrumblingSeal_Name":
                                 var p2Model = (SeasonLengthEffectModel)modifier.effect;
-                                p2Model.amount = _configuration.P2Amount;
+                                p2Model.amount = _configuration.Prestige_2_Amount;
                                 p2Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherBlueprintsRerollCost_Name":
                                 var p4Model = (ReputationRewardsRerollCostEffectModel)modifier.effect;
-                                p4Model.amount = _configuration.P4Amount;
+                                p4Model.amount = _configuration.Prestige_4_Amount;
                                 p4Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterLeaving_Name":
                                 var p5Model = (LeavingRateEffectModel)modifier.effect;
-                                p5Model.amount = _configuration.P5Amount;
+                                p5Model.amount = _configuration.Prestige_5_Amount;
                                 p5Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_WetSoil_Name":
                                 var p6Model = (ConstructionCostEffectModel)modifier.effect;
-                                p6Model.amount = _configuration.P6Amount;
+                                p6Model.amount = _configuration.Prestige_6_Amount;
                                 p6Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_Parasites_Name":
                                 var p7Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
-                                p7Model.amount = _configuration.P7Amount;
+                                p7Model.amount = _configuration.Prestige_7_Amount;
                                 p7Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherNeedsConsumptionRate_Name":
                                 var p8Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
-                                p8Model.amount = _configuration.P7Amount;
+                                p8Model.amount = _configuration.Prestige_8_Amount;
                                 p8Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LongerRelicsWorkingTime_Name":
                                 var p9Model = (RelicsWorkingTimeRateEffectModel)modifier.effect;
-                                p9Model.amount = _configuration.P9Amount;
+                                p9Model.amount = _configuration.Prestige_9_Amount;
                                 p9Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherTradersPrices_Name":
                                 var p10Model = (TraderGlobalSellPriceEffectModel)modifier.effect;
-                                p10Model.amount = _configuration.P10Amount;
+                                p10Model.amount = _configuration.Prestige_10_Amount;
                                 p10Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FewerCornerstonesOptions_Name":
                                 var p13Model = (SeasonalRewardsBonusOptionsEffectModel)modifier.effect;
-                                p13Model.amount = _configuration.P13Amount;
+                                p13Model.amount = _configuration.Prestige_13_Amount;
                                 p13Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LowerImpatienceReduction_Name":
                                 var p14Model = (BonusReputationPenaltyPerReputationEffectModel)modifier.effect;
-                                p14Model.amount = _configuration.P14Amount;
+                                p14Model.amount = _configuration.Prestige_14_Amount;
                                 p14Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_GlobalReputationTresholdIncrease_Name":
                                 var p15Model = (BonusGlobalReputationTresholdIncreaseEffectModel)modifier.effect;
-                                p15Model.amount = _configuration.P15Amount;
+                                p15Model.amount = _configuration.Prestige_15_Amount;
                                 p15Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_AscensionHungerMultiplier_Name":
                                 var p17Model = (HungerMultiplierEffectModel)modifier.effect;
-                                p17Model.amount = _configuration.P17Amount;
+                                p17Model.amount = _configuration.Prestige_17_Amount;
                                 p17Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterFuelSacrifice_Name":
                                 var p18Model = (HearthSacraficeTimeEffectModel)modifier.effect;
-                                p18Model.amount = _configuration.P18Amount;
+                                p18Model.amount = _configuration.Prestige_18_Amount;
                                 p18Model.ConsumeAsNonPerk();
                                 break;
                             // nothing to change on these... yet...
@@ -667,24 +668,18 @@ namespace Josiwe.ATS.Cheats
         private static CheatConfig GetCheatConfig()
         {
             string basePath = Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\Josiwe.ATS.Cheats.Config.json";
-            //WriteLog($"Loading cheat config using basePath {basePath}");
             // Tries to load the cheat config from json
             if (File.Exists(basePath))
             {
                 try
                 {
-                    //string json = File.ReadAllText(basePath);
-                    return Newtonsoft.Json.JsonConvert.DeserializeObject<CheatConfig>(File.ReadAllText(basePath));
+                    return JsonConvert.DeserializeObject<CheatConfig>(File.ReadAllText(basePath));
                 }
                 catch (Exception ex)
                 {
                     WriteLog($"Failed loading cheat config =(");
                     WriteLog(ex.Message);
                 }
-            }
-            else
-            {
-                //WriteLog("Cheat config file not found =(");
             }
 
             return null;
