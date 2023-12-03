@@ -17,5 +17,21 @@
     "ZoomLimitMultiplier": 7,
     "BlueprintsMultiplier": 1,
     "CashRewardMultiplier": 1,
-    "CornerstonePicksPerSeason": 1
+    "CornerstonePicksPerSeason": 1,
+
+    "P4Amount": 10,
+    "P12Amount": 1,
+    "P13Amount": 1,
+    "P15Amount": 1,
+    "P17Amount": 1,
+
+    "P2Amount": 1.0,
+    "P5Amount": 1.0,
+    "P6Amount": 0.5,
+    "P7Amount": 0.5,
+    "P8Amount": 0.5,
+    "P9Amount": -0.33,
+    "P10Amount": -0.5,
+    "P14Amount": 0.5,
+    "P18Amount": -0.35
 }

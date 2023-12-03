@@ -11,6 +11,7 @@ using UnityEngine;
 using System;
 using Eremite.Model.State;
 using Eremite.Services.Meta;
+using Eremite.Model.Effects;
 
 namespace Josiwe.ATS.Cheats
 {
@@ -19,6 +20,7 @@ namespace Josiwe.ATS.Cheats
     {
         private Harmony harmony;
         public static Plugin Instance;
+        private static readonly CheatConfig _configuration = GetCheatConfig();
 
         #region Awake
         private void Awake()
@@ -40,13 +42,9 @@ namespace Josiwe.ATS.Cheats
         {
             // original code:
             // private Vector2 zoomLimit = new Vector2(-20f, -8f);
-            var config = GetCheatConfig();
-
-            int zoomMultiplier = 1;
-            if (config != null)
-            {
-                zoomMultiplier = config.ZoomLimitMultiplier;
-            }
+            var zoomMultiplier = 1.0f;
+            if (_configuration != null)
+                zoomMultiplier = _configuration.ZoomMultiplier;
 
             // zoomLimit is used as to define the min/max range for camera z
             // we want to increase x (the outer zoom limit) but leave y untouched
@@ -56,9 +54,7 @@ namespace Josiwe.ATS.Cheats
 
             // with more zoom space to cross, we need a speedier zoom
             if (zoomMultiplier != 0)
-            {
-                __instance.zoomSmoothTime = __instance.zoomSmoothTime / zoomMultiplier;
-            }
+                __instance.zoomSmoothTime /= zoomMultiplier;
         }
         #endregion
 
@@ -72,7 +68,6 @@ namespace Josiwe.ATS.Cheats
         //[HarmonyPrefix]
         //public static void AddRewards_PrePatch(OrdersService __instance, OrderState order)
         //{
-        //    //CheatConfig cheatConfig = GetCheatConfig();
         //    foreach (EffectModel reward in __instance.GetOrderModel(order).GetRewards(order))
         //    {
         //        // TODO: play around with rewards and orders lol
@@ -82,74 +77,221 @@ namespace Josiwe.ATS.Cheats
         //} 
         #endregion
 
-        #region GetSeasonLenghtRate_PrePatch
+        #region Effects Service Mods
         /// <summary>
         /// Modify the length of each season
         /// </summary>
         /// <param name="__instance"></param>
         /// <param name="season"></param>
-        /// <param name="__result"></param
+        /// <param name="__result"></param>
         [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.GetSeasonLenghtRate))]
         [HarmonyPrefix]
         private static bool GetSeasonLenghtRate_PrePatch(EffectsService __instance, Season season, ref float __result)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null)
+            if (_configuration == null)
                 return true; // run the original game method
 
-            var stormMultiplier = cheatConfig.StormLengthMultiplier;
-            var drizzleMultiplier = cheatConfig.DrizzleLengthMultiplier;
-            var clearanceMultiplier = cheatConfig.ClearanceLengthMultiplier;
-            switch (season)
+            var stormMultiplier = _configuration.StormLengthMultiplier;
+            var drizzleMultiplier = _configuration.DrizzleLengthMultiplier;
+            var clearanceMultiplier = _configuration.ClearanceLengthMultiplier;
+            __result = season switch
             {
-                case Season.Drizzle:
-                    __result = drizzleMultiplier > 1
-                        ? __instance.Effects.drizzleLength * drizzleMultiplier
-                        : __instance.Effects.drizzleLength;
-                    break;
-                case Season.Clearance:
-                    __result = clearanceMultiplier > 1
-                        ? __instance.Effects.clearanceleLength * clearanceMultiplier
-                        : __instance.Effects.clearanceleLength;
-                    break;
-                case Season.Storm:
-                    __result = stormMultiplier > 1
-                       ? __instance.Effects.stormLength * stormMultiplier
-                       : __instance.Effects.stormLength;
-                    break;
-                default:
-                    throw new NotImplementedException(season.ToString());
-            }
+                Season.Drizzle => drizzleMultiplier > 0.0f
+                                        ? __instance.Effects.drizzleLength * drizzleMultiplier
+                                        : __instance.Effects.drizzleLength,
+                Season.Clearance => clearanceMultiplier > 0.0f
+                                        ? __instance.Effects.clearanceleLength * clearanceMultiplier
+                                        : __instance.Effects.clearanceleLength,
+                Season.Storm => stormMultiplier > 0.0f
+                                       ? __instance.Effects.stormLength * stormMultiplier
+                                       : __instance.Effects.stormLength,
+                _ => throw new NotImplementedException(season.ToString()),
+            };
+
+            return false; // do not run the original game method
+        }
+
+        /// <summary>
+        /// Replaces a few of the effects upon embarking into a map
+        /// </summary>
+        /// <returns></returns>
+        [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.AddDifficultyEarlyModifiers))]
+        [HarmonyPrefix]
+        private static bool AddDifficultyEarlyModifiers_PrePatch()
+        {
+            if (_configuration == null || Serviceable.ConditionsService.IsCustomGame())
+                return true; // run the original game method
+
+            foreach (AscensionModifierModel modifier in Serviceable.BiomeService.Difficulty.modifiers)
+                if (modifier.isEarlyEffect)
+                {
+                    // listing all early effects (only 3 total)
+                    // ascension altar (Pioneer), fewer blueprint options (P12) and fewer initial blueprints (P16)
+                    WriteLog($"Early Effect: {modifier.Name} - {modifier.effect.name} - {modifier.effect.GetType()}");
+                    WriteLog($"{modifier.effect.Description}");
+                    WriteLog($" - DisplayNameKey {modifier.effect.DisplayNameKey}");
+                    WriteLog($" - GetAmountText {modifier.effect.GetAmountText()}");
+                    WriteLog($" - GetRawAmountText {modifier.effect.GetRawAmountText()}");
+                    WriteLog($" - GetFloatAmount {modifier.effect.GetFloatAmount()}");
+                    WriteLog($" - GetIntAmount {modifier.effect.GetIntAmount()}");
+
+                    // modify the models for which we have config options
+                    // always look at the log output to cast to the correct model
+                    switch (modifier.effect.DisplayNameKey)
+                    {
+                        case "Effect_FewerBlueprintsOptions_Name":
+                            var p12Model = (ReputationRewardsBonusOptionsEffectModel)modifier.effect;
+                            p12Model.amount = _configuration.P12Amount; // change the amount
+                            p12Model.ConsumeAsNonPerk();
+                            break;
+                        // nothing to change on these... yet...
+                        case "Building_Altar_Name":
+                        //var pioneerModel = (CompositeEffectModel)modifier.effect;
+                        case "Effect_FewerInitialBlueprints_Name":
+                        //var p16Model = (ExtraReputationPickEffectModel)modifier.effect;
+                        default:
+                            modifier.effect.ConsumeAsNonPerk();
+                            break;
+                    }
+                }
+
+            return false; // do not run the original game method
+        }
+
+        /// <summary>
+        /// Replaces most of the effects upon embarking into a map
+        /// </summary>
+        /// <returns></returns>
+        [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.AddLateInitialEffects))]
+        [HarmonyPrefix]
+        private static bool AddLateInitialEffects_PrePatch()
+        {
+            if (_configuration == null)
+                return true; // run the original game method
+
+            foreach (EffectModel effect in Serviceable.Biome.effects)
+                effect.Apply();
+            foreach (string activeEventsEffect in Serviceable.WorldStateService.Cycle.activeEventsEffects)
+                Serviceable.Settings.GetEffect(activeEventsEffect).Apply();
+            foreach (string embarkEffect in Serviceable.MetaStateService.GameConditions.embarkEffects)
+                Serviceable.Settings.GetEffect(embarkEffect).Apply();
+            foreach (string lateEffect in Serviceable.MetaStateService.GameConditions.lateEffects)
+                Serviceable.Settings.GetEffect(lateEffect).Apply();
+            if (!Serviceable.ConditionsService.IsCustomGame())
+                foreach (AscensionModifierModel modifier in Serviceable.BiomeService.Difficulty.modifiers)
+                    if (!modifier.isEarlyEffect)
+                    {
+                        // listing all late effects
+                        WriteLog($"Late Effect: {modifier.Name} - {modifier.effect.name} - {modifier.effect.GetType()}");
+                        WriteLog($"{modifier.effect.Description}");
+                        WriteLog($" - DisplayNameKey {modifier.effect.DisplayNameKey}");
+                        WriteLog($" - GetAmountText {modifier.effect.GetAmountText()}");
+                        WriteLog($" - GetRawAmountText {modifier.effect.GetRawAmountText()}");
+                        WriteLog($" - GetFloatAmount {modifier.effect.GetFloatAmount()}");
+                        WriteLog($" - GetIntAmount {modifier.effect.GetIntAmount()}");
+
+                        // modify the models for which we have config options
+                        switch (modifier.effect.DisplayNameKey)
+                        {
+                            case "Effect_CrumblingSeal_Name":
+                                var p2Model = (SeasonLengthEffectModel)modifier.effect;
+                                p2Model.amount = _configuration.P2Amount;
+                                p2Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_HigherBlueprintsRerollCost_Name":
+                                var p4Model = (ReputationRewardsRerollCostEffectModel)modifier.effect;
+                                p4Model.amount = _configuration.P4Amount;
+                                p4Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_FasterLeaving_Name":
+                                var p5Model = (LeavingRateEffectModel)modifier.effect;
+                                p5Model.amount = _configuration.P5Amount;
+                                p5Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_WetSoil_Name":
+                                var p6Model = (ConstructionCostEffectModel)modifier.effect;
+                                p6Model.amount = _configuration.P6Amount;
+                                p6Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_Parasites_Name":
+                                var p7Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
+                                p7Model.amount = _configuration.P7Amount;
+                                p7Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_HigherNeedsConsumptionRate_Name":
+                                var p8Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
+                                p8Model.amount = _configuration.P7Amount;
+                                p8Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_LongerRelicsWorkingTime_Name":
+                                var p9Model = (RelicsWorkingTimeRateEffectModel)modifier.effect;
+                                p9Model.amount = _configuration.P9Amount;
+                                p9Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_HigherTradersPrices_Name":
+                                var p10Model = (TraderGlobalSellPriceEffectModel)modifier.effect;
+                                p10Model.amount = _configuration.P10Amount;
+                                p10Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_FewerCornerstonesOptions_Name":
+                                var p13Model = (SeasonalRewardsBonusOptionsEffectModel)modifier.effect;
+                                p13Model.amount = _configuration.P13Amount;
+                                p13Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_LowerImpatienceReduction_Name":
+                                var p14Model = (BonusReputationPenaltyPerReputationEffectModel)modifier.effect;
+                                p14Model.amount = _configuration.P14Amount;
+                                p14Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_GlobalReputationTresholdIncrease_Name":
+                                var p15Model = (BonusGlobalReputationTresholdIncreaseEffectModel)modifier.effect;
+                                p15Model.amount = _configuration.P15Amount;
+                                p15Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_AscensionHungerMultiplier_Name":
+                                var p17Model = (HungerMultiplierEffectModel)modifier.effect;
+                                p17Model.amount = _configuration.P17Amount;
+                                p17Model.ConsumeAsNonPerk();
+                                break;
+                            case "Effect_FasterFuelSacrifice_Name":
+                                var p18Model = (HearthSacraficeTimeEffectModel)modifier.effect;
+                                p18Model.amount = _configuration.P18Amount;
+                                p18Model.ConsumeAsNonPerk();
+                                break;
+                            // nothing to change on these... yet...
+                            case "Wiki_Blightrot_Title":
+                            //var viceroyModel = (CompositeEffectModel)modifier.effect;
+                            case "Effect_ReputationChanges_Name":
+                            //var p1_1Model = (CompositeEffectModel)modifier.effect;
+                            case "Effect_HardOrdersOnly_Name":
+                            //var p1_2Model = (CompositeEffectModel)modifier.effect;
+                            case "Effect_CystsSpawn_Name":
+                            //var p3Model = (HookedEffectModel)modifier.effect;
+                            case "Effect_BlightrotMedium_Name":
+                            //var p11Model = (CompositeEffectModel)modifier.effect;
+                            case "Effect_ExplorationTax_Name":
+                            //var p19Model = (CompositeEffectModel)modifier.effect;
+                            case "Effect_AdditionalImpatienceForDeath_Name":
+                            //var p20Model = (AdditionalDeathEffectModel)modifier.effect;
+                            default:
+                                modifier.effect.ConsumeAsNonPerk();
+                                break;
+                        }
+                    }
+
+            if (Serviceable.ConditionsService.IsBlightActive() && !Serviceable.TutorialService.IsAnyTutorial(Serviceable.Biome))
+                foreach (EffectModel initialEffect in Serviceable.Settings.blightConfig.initialEffects)
+                    initialEffect.Apply();
 
             return false; // do not run the original game method
         }
         #endregion
 
-        //#region GetTraderSellPriceFor_PrePatch
-        ///// <summary>
-        ///// Modify trader prices
-        ///// </summary>
-        ///// <param name="__instance"></param>
-        ///// <param name="good"></param>
-        ///// <param name="__result"></param
-        //[HarmonyPatch(typeof(EffectsService), nameof(EffectsService.GetTraderSellPriceFor))]
-        //[HarmonyPrefix]
-        //public static bool GetTraderSellPriceFor_PrePatch(EffectsService __instance, GoodModel good, ref float __result)
-        //{
-        //    CheatConfig cheatConfig = GetCheatConfig();
-        //    if (cheatConfig == null)
-        //        return true; // run the original game method
-
-        //    WriteLog($"Difficulty Settings: {Serviceable.BiomeService.CurrentBiome.difficulty.GetDataFor(Serviceable.BiomeService.Difficulty).difficulty.GetDisplayName()}");
-
-        //    float num = __instance.Effects.traderGlobalSellPriceRate + __instance.MetaPerks.traderSellPriceBonusRates;
-        //    if (__instance.Effects.traderSellPriceRates.ContainsKey(good.Name))
-        //        num += __instance.Effects.traderSellPriceRates[good.Name];
-        //    __result = good.tradingSellValue * Mathf.Clamp(num, Serviceable.Settings.minTradingSellValueRate, Serviceable.Settings.maxTradingSellValueRate);
-
-        //    return false; // do not run the original game method
-        //}
-        //#endregion
+        #region GetTraderSellPriceFor
+        // cannot patch GetTraderSellPriceFor cause there's 2 of them with the same name and bepinx can't distinguish between them... =(
+        //public static float GetTraderSellPriceFor(string goodName, float amount)
+        //public static float GetTraderSellPriceFor(GoodModel good)
+        #endregion
 
         #region AddReputation_PrePatch
         /// <summary>
@@ -162,13 +304,12 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool AddReputation_PrePatch(ResolveReputationCalculator __instance, string race, float change)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
             // TODO: still can't find rep changes when a race is super hyped (i.e. blue)
-            if (!Serviceable.ReputationService.IsValidReputationGain(change) || cheatConfig == null)
+            if (!Serviceable.ReputationService.IsValidReputationGain(change) || _configuration == null)
                 return true; // run the original game method
 
             // if the change isn't from an order reward use the multiplier
-            var newChange = change * cheatConfig.ResolveMultiplier;
+            var newChange = change * _configuration.ResolveMultiplier;
             Serviceable.ReputationService.AddReputationPoints(newChange, ReputationChangeSource.Resolve);
             __instance.ReputationGains[race] += newChange;
 
@@ -188,22 +329,22 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool AddReputationPoints_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, string reason = null)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (!__instance.IsValidReputationGain(amount) || cheatConfig == null)
+            if (!__instance.IsValidReputationGain(amount) || _configuration == null)
                 return true; // run the original game method
 
             // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
             // comparing map names doesn't always work though... dunno why...
             //var maxReputation = Serviceable.BuildingsService.Relics.Count == 0
-            //    ? (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap
-            //    : (float)__instance.GetReputationToWin() - (cheatConfig.ReputationStopgap + 1);
+            //    ? (float)__instance.GetReputationToWin() - _configuration.ReputationStopgap
+            //    : (float)__instance.GetReputationToWin() - (_configuration.ReputationStopgap + 1);
             //WriteLog($"Current biome is: {Serviceable.BiomeService.CurrentBiome.Name}");
 
-            var newAmount = amount * cheatConfig.ReputationMutiplier;
+            var newAmount = amount * _configuration.ReputationMutiplier;
             // cap max reputation only for resolve gains - we do want players to win via map events and orders
             var maxReputation = type != ReputationChangeSource.Resolve
                                     ? (float)__instance.GetReputationToWin()
-                                    : (float)__instance.GetReputationToWin() - cheatConfig.ReputationStopgap;
+                                    : (float)__instance.GetReputationToWin() - _configuration.ReputationStopgap;
+            // for debugging only (they spam the log)
             //WriteLog($"Total: {__instance.GetReputationToWin()} - Type: {type} - Stopgap: {maxReputation}");
             //WriteLog($"Reputation added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationSources[(int)type] += newAmount;
@@ -229,12 +370,12 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null || Mathf.Approximately(amount, 0.0f) || !force && __instance.IsGameFinished())
+            if (_configuration == null || Mathf.Approximately(amount, 0.0f) || !force && __instance.IsGameFinished())
                 return true; // run the original game method
 
-            var newAmount = amount * cheatConfig.ImpatienceMultiplier;
-            var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - cheatConfig.ReputationStopgap;
+            var newAmount = amount * _configuration.ImpatienceMultiplier;
+            var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - _configuration.ReputationStopgap;
+            // for debugging only (they spam the log)
             //WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
             //WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationPenalty = Mathf.Clamp(__instance.State.reputationPenalty + newAmount, 0.0f, maxImpatience);
@@ -255,8 +396,7 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool GetRerollsLeft_PrePatch()
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null || !cheatConfig.EnableInfiniteCornerstoneRerolls)
+            if (_configuration == null || !_configuration.EnableInfiniteCornerstoneRerolls)
                 return true; // run the original game method
 
             Serviceable.StateService.Gameplay.cornerstonesRerollsLeft = 99;
@@ -277,8 +417,7 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool GenerateRewards_PrePatch(CornerstonesService __instance, ref SeasonRewardModel model, int seed, List<EffectModel> toExclude)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null)
+            if (_configuration == null)
                 return true; // run the original method
 
             // when the model is null it's replaced with random model in the cornerstone service, this is my hacky patch
@@ -289,7 +428,7 @@ namespace Josiwe.ATS.Cheats
                 + Serviceable.StateService.Effects.bonusSeasonalRewardsOptions
                 + Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount;
             // 7 is the max the UI can display, so let's find the right number to add
-            if (cheatConfig.MoarSeasonRewards && currentRewardsAmount < 7)
+            if (_configuration.MoarSeasonRewards && currentRewardsAmount < 7)
             {
                 WriteLog($"Generating {7 - currentRewardsAmount} extra pick options for the cornerstones UI");
                 Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount += 7 - currentRewardsAmount;
@@ -312,16 +451,15 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool GenerateRewardsFor_PrePatch(CornerstonesService __instance, SeasonRewardModel model, string viewConfiguration, bool isExtra)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null || cheatConfig.CornerstonePicksPerSeason <= 1)
+            if (_configuration == null || _configuration.CornerstonePicksPerSeason <= 1)
                 return true; // run the original method
 
             // debugging
-            WriteLog($"Generating extra cornerstone picks for season change: {cheatConfig.CornerstonePicksPerSeason}");
+            WriteLog($"Generating extra cornerstone picks for season change: {_configuration.CornerstonePicksPerSeason}");
             WriteLog($"viewConfiguration: {viewConfiguration}");
             WriteLog($"isExtra: {isExtra}");
 
-            for (int i = 1; i < cheatConfig.CornerstonePicksPerSeason; i++)
+            for (int i = 1; i < _configuration.CornerstonePicksPerSeason; i++)
                 __instance.Picks.Add(__instance.CreatePick(model, new List<EffectModel>(), viewConfiguration, isExtra));
 
             return true; // now run the original method
@@ -347,15 +485,14 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool RewardForDecline_PrePatch()
         {
-            CheatConfig cheatConfig = GetCheatConfig();
             // don't let some genious try out numbers below 1
-            if (cheatConfig == null || cheatConfig.CashRewardMultiplier <= 1)
+            if (_configuration == null || _configuration.CashRewardMultiplier <= 1)
                 return true; // run the original game method
 
             var goods = Serviceable.Biome.seasons.seasonRewardsDeclineGood.ToGood();
-            goods.amount *= cheatConfig.CashRewardMultiplier;
+            goods.amount *= _configuration.CashRewardMultiplier;
             Serviceable.StorageService.Main.Store(goods);
-         
+
             return false; // do not run the original game method
         }
         #endregion
@@ -370,18 +507,17 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool PrepareInitialPoints_PrePatch(ReputationRewardsService __instance)
         {
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !cheatConfig.EnableWildcardBlueprints)
+            if (_configuration == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !_configuration.EnableWildcardBlueprints)
                 return true; // run the original game method
 
-            WriteLog("EnableWildcardBlueprints: " + cheatConfig.EnableWildcardBlueprints.ToString());
+            WriteLog("EnableWildcardBlueprints: " + _configuration.EnableWildcardBlueprints.ToString());
             WriteLog("initialReputationPicksGranted: " + __instance.State.initialReputationPicksGranted.ToString());
 
             if (__instance.State.initialReputationPicksGranted == false)
             {
                 __instance.State.initialReputationPicksGranted = true;
-                WriteLog($"Generating {cheatConfig.BlueprintsMultiplier} wildcard blueprint picks");
-                Serviceable.EffectsService.GrantWildcardPick(cheatConfig.BlueprintsMultiplier);
+                WriteLog($"Generating {_configuration.BlueprintsMultiplier} wildcard blueprint picks");
+                Serviceable.EffectsService.GrantWildcardPick(_configuration.BlueprintsMultiplier);
             }
 
             // test code
@@ -412,8 +548,7 @@ namespace Josiwe.ATS.Cheats
                 __instance.State.lastGrantedReputationReward = points;
             }
 
-            CheatConfig cheatConfig = GetCheatConfig();
-            if (cheatConfig == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !cheatConfig.EnableWildcardBlueprints)
+            if (_configuration == null || MB.TutorialService.IsAnyTutorial(GameMB.Biome) || !_configuration.EnableWildcardBlueprints)
                 return true; // run the original game method
 
             // copied from original function
@@ -478,10 +613,9 @@ namespace Josiwe.ATS.Cheats
         /// <returns></returns>
         [HarmonyPatch(typeof(CaravanGenerator), nameof(CaravanGenerator.GetUniqueRevealedRaces))]
         [HarmonyPrefix]
-        private static bool GetUniqueRevealedRaces_PrePatch(CaravanGenerator __instance, List<EmbarkCaravanState> current, ref int __result)
+        protected static bool GetUniqueRevealedRaces_PrePatch(CaravanGenerator __instance, List<EmbarkCaravanState> current, ref int __result)
         {
-            var config = GetCheatConfig();
-            if (config == null || !config.AllRacesInWorldMap)
+            if (_configuration == null || !_configuration.AllRacesInWorldMap)
                 return true; // run the original game method
 
             for (int index = 0; index < 10; ++index)
@@ -529,21 +663,18 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region GetCheatConfig
+        #region Utilities
         private static CheatConfig GetCheatConfig()
         {
-            CheatConfig cheatConfig = null;
-
             string basePath = Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\Josiwe.ATS.Cheats.Config.json";
             //WriteLog($"Loading cheat config using basePath {basePath}");
-
             // Tries to load the cheat config from json
             if (File.Exists(basePath))
             {
                 try
                 {
-                    string json = File.ReadAllText(basePath);
-                    cheatConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<CheatConfig>(File.ReadAllText(basePath));
+                    //string json = File.ReadAllText(basePath);
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<CheatConfig>(File.ReadAllText(basePath));
                 }
                 catch (Exception ex)
                 {
@@ -556,14 +687,12 @@ namespace Josiwe.ATS.Cheats
                 //WriteLog("Cheat config file not found =(");
             }
 
-            return cheatConfig;
+            return null;
         }
-        #endregion
 
-        #region WriteLog
         private static void WriteLog(string message)
         {
-            Instance.Logger.LogInfo("Josiwe.ATS.Cheats:: " + message);
+            Instance.Logger.LogInfo(message);
         }
         #endregion
     }
