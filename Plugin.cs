@@ -338,8 +338,8 @@ namespace Josiwe.ATS.Cheats
             var newAmount = amount * _configuration.ImpatienceMultiplier;
             var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - _configuration.ReputationStopgap;
             // for debugging only (they spam the log)
-            WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
-            WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
+            //WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
+            //WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationPenalty = Mathf.Clamp(__instance.State.reputationPenalty + newAmount, 0.0f, maxImpatience);
             __instance.ReputationPenalty.Value = __instance.State.reputationPenalty;
             __instance.reputationPenaltyChangedSubject.OnNext(new ReputationChange(newAmount, reason, type));
