@@ -7,6 +7,7 @@ namespace Josiwe.ATS.Cheats
         #region World Map
         public float ZoomMultiplier { get; set; } = 7.0f;
         public bool AllRacesInWorldMap { get; set; } = false;
+        public int BonusPreparationPoints { get; set; } = 0;
         #endregion
 
         #region Game Map
@@ -17,6 +18,8 @@ namespace Josiwe.ATS.Cheats
         public float ImpatienceMultiplier { get; set; } = 1.0f;
         public int ReputationStopgap { get; set; } = 0;
         public int ImpatienceStopgap { get; set; } = 0;
+        public int MoarMaxReputation { get; set; } = 0;
+        public int MoarMaxImpatience { get; set; } = 0;
         public int BlueprintsMultiplier { get; set; } = 1;
         public int CashRewardMultiplier { get; set; } = 1;
         public int CornerstonePicksPerSeason { get; set; } = 1;

@@ -13,6 +13,7 @@ using Eremite.Model.State;
 using Eremite.Services.Meta;
 using Eremite.Model.Effects;
 using Newtonsoft.Json;
+using Eremite.Services.World;
 
 namespace Josiwe.ATS.Cheats
 {
@@ -44,6 +45,23 @@ namespace Josiwe.ATS.Cheats
             // with more zoom space to cross, we need a speedier zoom
             if (zoomMultiplier != 0)
                 __instance.zoomSmoothTime /= zoomMultiplier;
+        }
+        #endregion
+
+        #region World Embark Service Mods
+        // Adds bonus prep points
+        [HarmonyPatch(typeof(WorldEmbarkService), nameof(WorldEmbarkService.GetBonusPreparationPoints))]
+        [HarmonyPrefix]
+        public static bool GetBonusPreparationPoints(WorldEmbarkService __instance, ref int __result)
+        {
+            if (_configuration == null
+                || _configuration.BonusPreparationPoints <= 0)
+                return true; // run the original game method
+
+            WriteLog($"Default embark points: {__instance.Effects.bonusPreparationPoints} - we added {_configuration.BonusPreparationPoints} more");
+            __result = __instance.Effects.bonusPreparationPoints + _configuration.BonusPreparationPoints;
+
+            return false; // do not run the original game method
         }
         #endregion
 
@@ -287,6 +305,38 @@ namespace Josiwe.ATS.Cheats
         #endregion
 
         #region Reputation Service Mods
+        // Replaces the normal reputation cap
+        [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.GetReputationToWin))]
+        [HarmonyPrefix]
+        public static bool GetReputationToWin_PrePatch(ReputationService __instance, ref int __result)
+        {
+            if (_configuration == null
+                || _configuration.MoarMaxReputation == 0)
+                return true; // run the original game method
+
+            // for debugging only (they spam the log)
+            //WriteLog($"Default reputation bar: {__instance.Conditions.reputationToWin} - we added {_configuration.MoarMaxReputation} more");
+            __result = __instance.Conditions.reputationToWin + _configuration.MoarMaxReputation;
+
+            return false; // do not run the original game method
+        }
+
+        // Replaces the normal impatience cap
+        [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.GetReputationPenaltyToLoose))]
+        [HarmonyPrefix]
+        public static bool GetReputationPenaltyToLoose_PrePatch(ReputationService __instance, ref int __result)
+        {
+            if (_configuration == null
+                || _configuration.MoarMaxImpatience == 0)
+                return true; // run the original game method
+
+            // for debugging only (they spam the log)
+            //WriteLog($"Default impatience bar: {__instance.Conditions.reputationPenaltyToLoose} - we added {_configuration.MoarMaxImpatience} more");
+            __result = __instance.Conditions.reputationPenaltyToLoose + _configuration.MoarMaxImpatience;
+
+            return false; // do not run the original game method
+        }
+
         // Replaces normal reputation logic 
         [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.AddReputationPoints))]
         [HarmonyPrefix]
@@ -465,7 +515,7 @@ namespace Josiwe.ATS.Cheats
 
             return false; // do not run the original game method
         }
-        
+
         // Replace normal reputation rewards (blueprint picks) with wildcard blueprint picks
         [HarmonyPatch(typeof(ReputationRewardsService), nameof(ReputationRewardsService.UpdateRegularReputationReward))]
         [HarmonyPrefix]
@@ -542,6 +592,9 @@ namespace Josiwe.ATS.Cheats
         #endregion
 
         #region Work in progress items and other ideas
+        // TODO: sooo many options in the following services:
+        // - effectsService
+
         // TODO: Impatience gain when failing timed missions
         // Serviceable.ReputationService.AddReputationPoints(-0.99f, ReputationChangeSource.Other);
 

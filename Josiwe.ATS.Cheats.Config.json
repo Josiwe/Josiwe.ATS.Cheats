@@ -3,6 +3,7 @@
 
     "ZoomMultiplier": 7.0,
     "AllRacesInWorldMap": false,
+    "BonusPreparationPoints": 0,
 
 
     "Game Map": "Where you build, explore and forage",
@@ -14,6 +15,8 @@
     "ImpatienceMultiplier": 1.0,
     "ReputationStopgap": 0,
     "ImpatienceStopgap": 0,
+    "MoarMaxReputation": 0,
+    "MoarMaxImpatience": 0,
     "BlueprintsMultiplier": 1,
     "CashRewardMultiplier": 1,
     "CornerstonePicksPerSeason": 1,
