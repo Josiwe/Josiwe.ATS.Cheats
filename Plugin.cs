@@ -23,20 +23,8 @@ namespace Josiwe.ATS.Cheats
         public static Plugin Instance;
         private static readonly CheatConfig _configuration = GetCheatConfig();
 
-        #region Awake
-        private void Awake()
-        {
-            Instance = this;
-            harmony = Harmony.CreateAndPatchAll(typeof(Plugin));
-            Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-        }
-        #endregion
-
-        #region Setup_PostPatch
-        /// <summary>
-        /// Increase zoom limit
-        /// </summary>
-        /// <param name="__instance"></param>
+        #region Camera Controller Mods
+        // Increases the zoom limit
         [HarmonyPatch(typeof(CameraController), nameof(CameraController.SetUp))]
         [HarmonyPostfix]
         public static void Setup_PostPatch(CameraController __instance)
@@ -60,12 +48,7 @@ namespace Josiwe.ATS.Cheats
         #endregion
 
         #region Effects Service Mods
-        /// <summary>
-        /// Modify the length of each season
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="season"></param>
-        /// <param name="__result"></param>
+        // Modifies the length of each season
         [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.GetSeasonLenghtRate))]
         [HarmonyPrefix]
         private static bool GetSeasonLenghtRate_PrePatch(EffectsService __instance, Season season, ref float __result)
@@ -93,10 +76,7 @@ namespace Josiwe.ATS.Cheats
             return false; // do not run the original game method
         }
 
-        /// <summary>
-        /// Replaces a few of the effects upon embarking into a map
-        /// </summary>
-        /// <returns></returns>
+        // Replaces a few of the effects upon embarking into a map cell
         [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.AddDifficultyEarlyModifiers))]
         [HarmonyPrefix]
         private static bool AddDifficultyEarlyModifiers_PrePatch()
@@ -124,7 +104,7 @@ namespace Josiwe.ATS.Cheats
                     switch (modifier.effect.DisplayNameKey)
                     {
                         case "Effect_FewerBlueprintsOptions_Name":
-                            if (_configuration.Prestige_12_Amount < 0.0) break;
+                            if (_configuration.Prestige_12_Amount < 0.0f) break;
                             var p12Model = (ReputationRewardsBonusOptionsEffectModel)modifier.effect;
                             p12Model.amount = _configuration.Prestige_12_Amount; // change the amount
                             p12Model.ConsumeAsNonPerk();
@@ -143,10 +123,7 @@ namespace Josiwe.ATS.Cheats
             return false; // do not run the original game method
         }
 
-        /// <summary>
-        /// Replaces most of the effects upon embarking into a map
-        /// </summary>
-        /// <returns></returns>
+        // Replaces most of the effects upon embarking into a map cell
         [HarmonyPatch(typeof(EffectsService), nameof(EffectsService.AddLateInitialEffects))]
         [HarmonyPrefix]
         private static bool AddLateInitialEffects_PrePatch()
@@ -182,7 +159,7 @@ namespace Josiwe.ATS.Cheats
                         switch (modifier.effect.DisplayNameKey)
                         {
                             case "Effect_CrumblingSeal_Name":
-                                if (_configuration.Prestige_2_Amount < 0.0) break;
+                                if (_configuration.Prestige_2_Amount < 0.0f) break;
                                 var p2Model = (SeasonLengthEffectModel)modifier.effect;
                                 p2Model.amount = _configuration.Prestige_2_Amount;
                                 p2Model.ConsumeAsNonPerk();
@@ -194,37 +171,37 @@ namespace Josiwe.ATS.Cheats
                                 p4Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterLeaving_Name":
-                                if (_configuration.Prestige_5_Amount < 0.0) break;
+                                if (_configuration.Prestige_5_Amount < 0.0f) break;
                                 var p5Model = (LeavingRateEffectModel)modifier.effect;
                                 p5Model.amount = _configuration.Prestige_5_Amount;
                                 p5Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_WetSoil_Name":
-                                if (_configuration.Prestige_6_Amount < 0.0) break;
+                                if (_configuration.Prestige_6_Amount < 0.0f) break;
                                 var p6Model = (ConstructionCostEffectModel)modifier.effect;
                                 p6Model.amount = _configuration.Prestige_6_Amount;
                                 p6Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_Parasites_Name":
-                                if (_configuration.Prestige_7_Amount < 0.0) break;
+                                if (_configuration.Prestige_7_Amount < 0.0f) break;
                                 var p7Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
                                 p7Model.amount = _configuration.Prestige_7_Amount;
                                 p7Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherNeedsConsumptionRate_Name":
-                                if (_configuration.Prestige_8_Amount < 0.0) break;
+                                if (_configuration.Prestige_8_Amount < 0.0f) break;
                                 var p8Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
                                 p8Model.amount = _configuration.Prestige_8_Amount;
                                 p8Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LongerRelicsWorkingTime_Name":
-                                if (_configuration.Prestige_9_Amount > 0.0) break;
+                                if (_configuration.Prestige_9_Amount > 0.0f) break;
                                 var p9Model = (RelicsWorkingTimeRateEffectModel)modifier.effect;
                                 p9Model.amount = _configuration.Prestige_9_Amount;
                                 p9Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherTradersPrices_Name":
-                                if (_configuration.Prestige_10_Amount > 0.0) break;
+                                if (_configuration.Prestige_10_Amount > 0.0f) break;
                                 var p10Model = (TraderGlobalSellPriceEffectModel)modifier.effect;
                                 p10Model.amount = _configuration.Prestige_10_Amount;
                                 p10Model.ConsumeAsNonPerk();
@@ -236,7 +213,7 @@ namespace Josiwe.ATS.Cheats
                                 p13Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LowerImpatienceReduction_Name":
-                                if (_configuration.Prestige_14_Amount < 0.0) break;
+                                if (_configuration.Prestige_14_Amount < 0.0f) break;
                                 var p14Model = (BonusReputationPenaltyPerReputationEffectModel)modifier.effect;
                                 p14Model.amount = _configuration.Prestige_14_Amount;
                                 p14Model.ConsumeAsNonPerk();
@@ -254,7 +231,7 @@ namespace Josiwe.ATS.Cheats
                                 p17Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterFuelSacrifice_Name":
-                                if (_configuration.Prestige_18_Amount > 0.0) break;
+                                if (_configuration.Prestige_18_Amount > 0.0f) break;
                                 var p18Model = (HearthSacraficeTimeEffectModel)modifier.effect;
                                 p18Model.amount = _configuration.Prestige_18_Amount;
                                 p18Model.ConsumeAsNonPerk();
@@ -288,13 +265,8 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region AddReputation_PrePatch
-        /// <summary>
-        /// Replace the normal resolve logic
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="race"></param>
-        /// <param name="change"></param>
+        #region Resolve Reputation Calculator Mods
+        // Replaces the normal resolve logic
         [HarmonyPatch(typeof(ResolveReputationCalculator), nameof(ResolveReputationCalculator.AddReputation))]
         [HarmonyPrefix]
         private static bool AddReputation_PrePatch(ResolveReputationCalculator __instance, string race, float change)
@@ -314,21 +286,15 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region AddReputationPoints_PrePatch
-        /// <summary>
-        /// Replace normal reputation logic 
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="amount"></param>
-        /// <param name="type"></param>
-        /// <param name="reason"></param>
+        #region Reputation Service Mods
+        // Replaces normal reputation logic 
         [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.AddReputationPoints))]
         [HarmonyPrefix]
         public static bool AddReputationPoints_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, string reason = null)
         {
             if (!__instance.IsValidReputationGain(amount)
                 || _configuration == null
-                || _configuration.ReputationMutiplier < 0
+                || _configuration.ReputationMutiplier < 0.0f
                 || _configuration.ReputationStopgap < 0)
                 return true; // run the original game method
 
@@ -355,17 +321,8 @@ namespace Josiwe.ATS.Cheats
 
             return false; // do not run the original game method
         }
-        #endregion
 
-        #region AddReputationPenalty_PrePatch
-        /// <summary>
-        /// Replace normal impatience logic
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="amount"></param>
-        /// <param name="type"></param>
-        /// <param name="force"></param>
-        /// <param name="reason"></param>
+        // Replaces normal impatience logic
         [HarmonyPatch(typeof(ReputationService), nameof(ReputationService.AddReputationPenalty))]
         [HarmonyPrefix]
         public static bool AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
@@ -374,15 +331,15 @@ namespace Josiwe.ATS.Cheats
                 || !force
                 && __instance.IsGameFinished()
                 || _configuration == null
-                || _configuration.ImpatienceMultiplier < 0
+                || _configuration.ImpatienceMultiplier < 0.0f
                 || _configuration.ImpatienceStopgap < 0)
                 return true; // run the original game method
 
             var newAmount = amount * _configuration.ImpatienceMultiplier;
             var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - _configuration.ReputationStopgap;
             // for debugging only (they spam the log)
-            //WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
-            //WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
+            WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
+            WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationPenalty = Mathf.Clamp(__instance.State.reputationPenalty + newAmount, 0.0f, maxImpatience);
             __instance.ReputationPenalty.Value = __instance.State.reputationPenalty;
             __instance.reputationPenaltyChangedSubject.OnNext(new ReputationChange(newAmount, reason, type));
@@ -392,11 +349,8 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region GetRerollsLeft_PrePatch
-        /// <summary>
-        /// Infinite cornerstone rerolls 
-        /// </summary>
-        /// <returns></returns>
+        #region Cornerstone Service Mods
+        // Grants infinite cornerstone rerolls 
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GetRerollsLeft))]
         [HarmonyPrefix]
         public static bool GetRerollsLeft_PrePatch()
@@ -409,16 +363,8 @@ namespace Josiwe.ATS.Cheats
 
             return true; // now run the original method
         }
-        #endregion
 
-        #region GenerateRewards_PrePatch
-        /// <summary>
-        /// Generate extra options for each cornerstone pick
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="seed"></param>
-        /// <param name="toExclude"></param>
-        /// <returns></returns>
+        // Generates extra options for each cornerstone pick
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GenerateRewards))]
         [HarmonyPrefix]
         private static bool GenerateRewards_PrePatch(CornerstonesService __instance, ref SeasonRewardModel model, int seed, List<EffectModel> toExclude)
@@ -443,17 +389,8 @@ namespace Josiwe.ATS.Cheats
 
             return true; // now run the original method
         }
-        #endregion
 
-        #region GenerateRewardsFor_PrePatch
-        /// <summary>
-        /// Generate extra cornerstone picks per season
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="model"></param>
-        /// <param name="viewConfiguration"></param>
-        /// <param name="isExtra"></param>
-        /// <returns></returns>
+        // Generates extra cornerstone picks per season
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GenerateRewardsFor))]
         [HarmonyPrefix]
         public static bool GenerateRewardsFor_PrePatch(CornerstonesService __instance, SeasonRewardModel model, string viewConfiguration, bool isExtra)
@@ -472,9 +409,8 @@ namespace Josiwe.ATS.Cheats
 
             return true; // now run the original method
         }
-        #endregion
 
-        #region GetAllCurrentOptions_PrePatch
+        // Replaces the list of exclusions when moar seasons rewards are wanted
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GetAllCurrentOptions))]
         [HarmonyPrefix]
         public static bool GetAllCurrentOptions_PrePatch(ref List<EffectModel> __result)
@@ -487,12 +423,8 @@ namespace Josiwe.ATS.Cheats
 
             return false; // do not run the original game method
         }
-        #endregion
 
-        #region RewardForDecline_PrePatch
-        /// <summary>
-        /// Replace the normal reward for declining a cornerstone
-        /// </summary>
+        // Replaces the normal reward for declining a cornerstone
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.RewardForDecline))]
         [HarmonyPrefix]
         private static bool RewardForDecline_PrePatch()
@@ -509,12 +441,8 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region PrepareInitialPoints_PrePatch
-        /// <summary>
-        /// Replace initial 3 building picks at the start of a game with configurable wildcard picks
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <returns></returns>
+        #region Reputation Rewards Service Mods
+        // Replace initial 3 building picks at the start of a game with configurable wildcard picks
         [HarmonyPatch(typeof(ReputationRewardsService), nameof(ReputationRewardsService.PrepareInitialPoints))]
         [HarmonyPrefix]
         private static bool PrepareInitialPoints_PrePatch(ReputationRewardsService __instance)
@@ -537,15 +465,8 @@ namespace Josiwe.ATS.Cheats
 
             return false; // do not run the original game method
         }
-        #endregion
-
-        #region UpdateRegularReputationReward_PrePatch
-        /// <summary>
-        /// Replace normal reputation rewards (blueprint picks) with wildcard blueprint picks
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="points"></param>
-        /// <returns></returns>
+        
+        // Replace normal reputation rewards (blueprint picks) with wildcard blueprint picks
         [HarmonyPatch(typeof(ReputationRewardsService), nameof(ReputationRewardsService.UpdateRegularReputationReward))]
         [HarmonyPrefix]
         private static bool UpdateRegularReputationReward_PrePatch(ReputationRewardsService __instance, int points)
@@ -593,14 +514,8 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region GetUniqueRevealedRaces_PrePatch
-        /// <summary>
-        /// Replace the normal caravan generation logic (world map only)
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="current"></param>
-        /// <param name="__result"></param>
-        /// <returns></returns>
+        #region Caravan Generator Mods
+        // Replaces the normal caravan generation logic (world map only)
         [HarmonyPatch(typeof(CaravanGenerator), nameof(CaravanGenerator.GetUniqueRevealedRaces))]
         [HarmonyPrefix]
         protected static bool GetUniqueRevealedRaces_PrePatch(CaravanGenerator __instance, List<EmbarkCaravanState> current, ref int __result)
@@ -668,10 +583,7 @@ namespace Josiwe.ATS.Cheats
         //} 
         #endregion
 
-        #region HookMainControllerSetup
-        /// <summary>
-        /// Needed for injection into the main game
-        /// </summary>
+        #region Controller Hooks -  Needed for injection into the main game
         [HarmonyPatch(typeof(MainController), nameof(MainController.OnServicesReady))]
         [HarmonyPostfix]
         private static void HookMainControllerSetup()
@@ -682,9 +594,7 @@ namespace Josiwe.ATS.Cheats
             Instance.Logger.LogInfo($"Performing game initialization on behalf of {PluginInfo.PLUGIN_GUID}.");
             Instance.Logger.LogInfo($"The game has loaded {MainController.Instance.Settings.effects.Length} effects.");
         }
-        #endregion
 
-        #region HookEveryGameStart
         [HarmonyPatch(typeof(GameController), nameof(GameController.StartGame))]
         [HarmonyPostfix]
         private static void HookEveryGameStart()
@@ -697,6 +607,13 @@ namespace Josiwe.ATS.Cheats
         #endregion
 
         #region Utilities
+        private void Awake()
+        {
+            Instance = this;
+            harmony = Harmony.CreateAndPatchAll(typeof(Plugin));
+            Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
+        }
+
         private static CheatConfig GetCheatConfig()
         {
             string basePath = Directory.GetCurrentDirectory() + "\\BepInEx\\plugins\\Josiwe.ATS.Cheats.Config.json";
