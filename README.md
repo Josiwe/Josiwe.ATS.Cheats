@@ -39,6 +39,11 @@ Here you'll find a detailed description of the type and effect of each setting i
 - when set to false uses the game's default logic
 - _experimental feature_
 
+**BonusPreparationPoints**
+- Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
+- setting this to any number greater than 0 will give you more embarkation points in the world map
+- setting this to 0 uses the game's default logic
+
 ## Game Map:
 
 **WildcardBlueprints**
@@ -76,21 +81,32 @@ Here you'll find a detailed description of the type and effect of each setting i
 
 **ReputationStopgap**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
-- used as a hard stop for reputation growth
-- setting this to any positive value greater than zero will prevent the reputation bar from filling up (only loyalty map events may increase it)
-- most useful when exploration is your goal (see notes below)
+- setting this to any positive value greater than zero will stop the reputation bar at X points from the max 
+	- only loyalty map events may increase it
+	- e.g. when playing on prestige 20 the max is 14, so if you set the stopgap at 2 the bar won't fill up past 12 points
 - setting this to 0 will allow the game's default logic to end your game when the max value for the map is reached (win scenario)
 
 **ImpatienceStopgap**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
-- used as a hard stop for impatience growth
-- setting this to any positive value greater than zero will prevent the impatience bar from filling up (only impatience map events may increase it)
-- most useful when exploration is your goal (see notes below)
+- setting this to any positive value greater than zero will stop the impatience bar at X points from the max
+	- only impatience map events may increase it
+	- e.g. when playing on prestige 20 the max is 14, so if you set the stopgap at 2 the bar won't fill up past 12 points
 - setting this to 0 will allow the game's default logic to end your game when the max value for the map is reached (lose scenario)
+
+**MoarMaxReputation**
+- Integer: _accepts any signed whole number (i.e. -10, 30, 15, -20)_
+- setting this value will grow (or shrink) the reputation bar on maps
+- setting this to 1.0 uses the game's default logic
+
+**MoarMaxImpatience**
+- Integer: _accepts any signed whole number (i.e. -10, 30, 15, -20)_
+- setting this value will grow (or shrink) the impatience bar on maps
+- setting this to 1.0 uses the game's default logic
 
 **BlueprintsMultiplier**
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
-- when set to any number greater than one, will allow a user to pick more blueprints (after either gaining a whole reputation point or buying the extra blueprint from a vendor)
+- when set to any number greater than one, will allow a user to pick more blueprints
+	- after either gaining a whole reputation point or buying the extra blueprint from a vendor
 - setting this to 1 uses the game's default logic
 
 **CashRewardMultiplier**

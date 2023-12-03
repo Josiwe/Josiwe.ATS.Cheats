@@ -3,6 +3,7 @@
 
     "ZoomMultiplier": 7.0,
     "AllRacesInWorldMap": false,
+    "BonusPreparationPoints": 0,
 
 
     "Game Map": "Where you build, explore and forage",
@@ -14,6 +15,8 @@
     "ImpatienceMultiplier": 1.0,
     "ReputationStopgap": 0,
     "ImpatienceStopgap": 0,
+    "MoarMaxReputation": 0,
+    "MoarMaxImpatience": 0,
     "BlueprintsMultiplier": 1,
     "CashRewardMultiplier": 1,
     "CornerstonePicksPerSeason": 1,
@@ -28,7 +31,7 @@
 
 
     "Prestige Difficulties": "Each description contains hints (plucked from the game's code) about the defaul values.",
-    
+
     "Prestige_2_Description": "Longer Storm - One of the seals is loosening its grip, leaking darkness upon this land. Storm season lasts 100% longer.",
     "Prestige_2_Amount": 1.0,
     "Prestige_4_Description": "Higher Blueprints Reroll Cost - The Archivist assigned to your settlement is fiercely loyal to the Royal Court, so bribing him will be more expensive. Blueprint rerolls cost 10 Amber more.",
