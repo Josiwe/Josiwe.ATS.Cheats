@@ -1,7 +1,7 @@
 {
     "WorldMap": "Where you pick a tile to start a settlement in",
 
-    "ZoomMultiplier": 7.0,
+    "ZoomMultiplier": 1.0,
     "AllRacesInWorldMap": false,
     "BonusPreparationPoints": 0,
 
@@ -30,7 +30,7 @@
     "ClearanceLengthMultiplier": 1.0,
 
 
-    "Prestige Difficulties": "Each description contains hints (plucked from the game's code) about the defaul values.",
+    "Prestige Difficulties": "Each description contains hints (plucked from the game's code) about the default values.",
 
     "Prestige_2_Description": "Longer Storm - One of the seals is loosening its grip, leaking darkness upon this land. Storm season lasts 100% longer.",
     "Prestige_2_Amount": 1.0,
