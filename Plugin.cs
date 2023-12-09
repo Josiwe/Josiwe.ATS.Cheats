@@ -400,8 +400,7 @@ namespace Josiwe.ATS.Cheats
         {
             if (!__instance.IsValidReputationGain(amount)
                 || _configuration == null
-                || _configuration.ReputationMutiplier < 0.0f
-                || _configuration.ReputationStopgap < 0)
+                || (_configuration.ReputationMutiplier < 0.0f && _configuration.ReputationStopgap <= 0))
                 return true; // run the original game method
 
             // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
@@ -417,7 +416,7 @@ namespace Josiwe.ATS.Cheats
                                     ? (float)__instance.GetReputationToWin()
                                     : (float)__instance.GetReputationToWin() - _configuration.ReputationStopgap;
             // for debugging only (they spam the log)
-            //WriteLog($"Total: {__instance.GetReputationToWin()} - Type: {type} - Stopgap: {maxReputation}");
+            //WriteLog($"Reputation to win: {__instance.GetReputationToWin()} - Type: {type} - Stopgap: {maxReputation}");
             //WriteLog($"Reputation added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationSources[(int)type] += newAmount;
             __instance.State.reputation = Mathf.Clamp(__instance.State.reputation + newAmount, 0.0f, maxReputation);
@@ -433,17 +432,14 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
         {
-            if (Mathf.Approximately(amount, 0.0f)
-                || (!force && __instance.IsGameFinished())
-                || _configuration == null
-                || _configuration.ImpatienceMultiplier < 0.0f
-                || _configuration.ImpatienceStopgap < 0)
+            if (_configuration == null
+                || (_configuration.ImpatienceMultiplier < 0.0f && _configuration.ImpatienceStopgap <= 0))
                 return true; // run the original game method
 
             var newAmount = amount * _configuration.ImpatienceMultiplier;
-            var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - _configuration.ReputationStopgap;
+            var maxImpatience = __instance.GetReputationPenaltyToLoose() - _configuration.ImpatienceStopgap;
             // for debugging only (they spam the log)
-            //WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
+            //WriteLog($"Impatience to lose: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
             //WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationPenalty = Mathf.Clamp(__instance.State.reputationPenalty + newAmount, 0.0f, maxImpatience);
             __instance.ReputationPenalty.Value = __instance.State.reputationPenalty;
@@ -454,7 +450,7 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region Cornerstone Service Mods
+            #region Cornerstone Service Mods
         // Grants infinite cornerstone rerolls 
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GetRerollsLeft))]
         [HarmonyPrefix]
