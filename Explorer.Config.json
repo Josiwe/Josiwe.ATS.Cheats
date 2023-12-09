@@ -49,7 +49,7 @@
     "Prestige_10_Description": "Higher Traders Prices - Traders gossip about you doing pretty well lately. All your goods are worth 50% less to traders.",
     "Prestige_10_Amount": -0.5,
     "Prestige_12_Description": "Fewer Blueprints Options - The greedy Royal Archivist sold most of the blueprints to traders and fled the Citadel. You have 2 fewer blueprint choices.",
-    "Prestige_12_Amount": 1,
+    "Prestige_12_Amount": -2,
     "Prestige_13_Description": "Fewer Cornerstones Options - The Royal Envoy comes to you with bad news. The Queen has restricted your cornerstone choices by 2.",
     "Prestige_13_Amount": 1,
     "Prestige_14_Description": "Lower Impatience Reduction - The Queen expects a lot from a viceroy of your rank. Impatience falls by 0.5 points less for every Reputation Point you gain.",

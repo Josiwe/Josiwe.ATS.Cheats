@@ -204,9 +204,9 @@ Here you'll find a detailed description of the type and effect of each setting i
 
 **Prestige_12_Amount**
 <br>`Fewer Blueprints Options - The greedy Royal Archivist sold most of the blueprints to traders and fled the Citadel. You have 2 fewer blueprint choices`
-- Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
-- when set to any number greater than one, will make the penalty larger
-- setting this to 1 uses the game's default logic
+- Integer: _accepts any **negative** whole number (i.e. -1, -3, -5)_
+- when set to any negative number, will make the penalty larger
+- setting this to -2 uses the game's default logic
 
 **Prestige_13_Amount**
 <br>`Fewer Cornerstones Options - The Royal Envoy comes to you with bad news. The Queen has restricted your cornerstone choices by 2`
