@@ -476,7 +476,11 @@ namespace Josiwe.ATS.Cheats
         {
             if (_configuration == null
                 || !_configuration.MoarSeasonRewards)
+            {
+                // reset the bonus season rewards back to default
+                Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount = 0;
                 return true; // run the original method
+            }
 
             // when the model is null it's replaced with random model in the cornerstone service, this is my hacky patch
             if (model == null)
