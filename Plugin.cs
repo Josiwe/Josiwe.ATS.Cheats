@@ -473,8 +473,9 @@ namespace Josiwe.ATS.Cheats
             if (_configuration == null
                 || !_configuration.MoarSeasonRewards)
             {
-                // reset the bonus season rewards back to default
-                Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount = 0;
+                // DO NOT reset the bonus season rewards back to default LOL
+                // they get reset on new maps. this was just adding another bug...
+                //Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount = 0;
                 return true; // run the original method
             }
 
