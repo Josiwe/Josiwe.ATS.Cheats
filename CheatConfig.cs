@@ -8,6 +8,7 @@ namespace Josiwe.ATS.Cheats
         public bool AllRacesInWorldMap { get; set; } = false;
         public bool EnableWildcardBlueprints { get; set; } = false;
         public bool EnableInfiniteCornerstoneRerolls { get; set; } = false;
+        public bool EnableAllBuildingsMoving { get; set; } = false;
 
         public float ZoomMultiplier { get; set; } = 7.0f;
         public float ResolveMultiplier { get; set; } = 1.0f;
