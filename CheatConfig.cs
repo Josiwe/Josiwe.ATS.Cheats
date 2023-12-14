@@ -51,7 +51,7 @@ namespace Josiwe.ATS.Cheats
         // Higher Traders Prices - Traders gossip about you doing pretty well lately. All your goods are worth 50% less to traders.
         public float Prestige_10_Amount { get; set; } = -0.5f;
         // Fewer Blueprints Options - The greedy Royal Archivist sold most of the blueprints to traders and fled the Citadel. You have 2 fewer blueprint choices.
-        public int Prestige_12_Amount { get; set; } = 1;
+        public int Prestige_12_Amount { get; set; } = -2;
         // Fewer Cornerstones Options - The Royal Envoy comes to you with bad news. The Queen has restricted your cornerstone choices by 2.
         public int Prestige_13_Amount { get; set; } = 2;
         // Lower Impatience Reduction - The Queen expects a lot from a viceroy of your rank. Impatience falls by 0.5 points less for every Reputation point you gain.

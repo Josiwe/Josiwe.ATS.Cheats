@@ -122,7 +122,11 @@ namespace Josiwe.ATS.Cheats
                     switch (modifier.effect.DisplayNameKey)
                     {
                         case "Effect_FewerBlueprintsOptions_Name":
-                            if (_configuration.Prestige_12_Amount < 0.0f) break;
+                            if (_configuration.Prestige_12_Amount > 0.0f)
+                            {
+                                modifier.effect.ConsumeAsNonPerk();
+                                break;
+                            }
                             var p12Model = (ReputationRewardsBonusOptionsEffectModel)modifier.effect;
                             p12Model.amount = _configuration.Prestige_12_Amount; // change the amount
                             p12Model.ConsumeAsNonPerk();
@@ -177,79 +181,131 @@ namespace Josiwe.ATS.Cheats
                         switch (modifier.effect.DisplayNameKey)
                         {
                             case "Effect_CrumblingSeal_Name":
-                                if (_configuration.Prestige_2_Amount < 0.0f) break;
+                                if (_configuration.Prestige_2_Amount < 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p2Model = (SeasonLengthEffectModel)modifier.effect;
                                 p2Model.amount = _configuration.Prestige_2_Amount;
                                 p2Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherBlueprintsRerollCost_Name":
-                                if (_configuration.Prestige_4_Amount < 0) break;
+                                if (_configuration.Prestige_4_Amount < 0)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p4Model = (ReputationRewardsRerollCostEffectModel)modifier.effect;
                                 p4Model.amount = _configuration.Prestige_4_Amount;
                                 p4Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterLeaving_Name":
-                                if (_configuration.Prestige_5_Amount < 0.0f) break;
+                                if (_configuration.Prestige_5_Amount < 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p5Model = (LeavingRateEffectModel)modifier.effect;
                                 p5Model.amount = _configuration.Prestige_5_Amount;
                                 p5Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_WetSoil_Name":
-                                if (_configuration.Prestige_6_Amount < 0.0f) break;
+                                if (_configuration.Prestige_6_Amount < 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p6Model = (ConstructionCostEffectModel)modifier.effect;
                                 p6Model.amount = _configuration.Prestige_6_Amount;
                                 p6Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_Parasites_Name":
-                                if (_configuration.Prestige_7_Amount < 0.0f) break;
+                                if (_configuration.Prestige_7_Amount < 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p7Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
                                 p7Model.amount = _configuration.Prestige_7_Amount;
                                 p7Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherNeedsConsumptionRate_Name":
-                                if (_configuration.Prestige_8_Amount < 0.0f) break;
+                                if (_configuration.Prestige_8_Amount < 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p8Model = (ChanceForExtraConsumptionEffectModel)modifier.effect;
                                 p8Model.amount = _configuration.Prestige_8_Amount;
                                 p8Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LongerRelicsWorkingTime_Name":
-                                if (_configuration.Prestige_9_Amount > 0.0f) break;
+                                if (_configuration.Prestige_9_Amount > 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p9Model = (RelicsWorkingTimeRateEffectModel)modifier.effect;
                                 p9Model.amount = _configuration.Prestige_9_Amount;
                                 p9Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_HigherTradersPrices_Name":
-                                if (_configuration.Prestige_10_Amount > 0.0f) break;
+                                if (_configuration.Prestige_10_Amount > 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p10Model = (TraderGlobalSellPriceEffectModel)modifier.effect;
                                 p10Model.amount = _configuration.Prestige_10_Amount;
                                 p10Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FewerCornerstonesOptions_Name":
-                                if (_configuration.Prestige_13_Amount < 0) break;
+                                if (_configuration.Prestige_13_Amount < 0)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p13Model = (SeasonalRewardsBonusOptionsEffectModel)modifier.effect;
                                 p13Model.amount = _configuration.Prestige_13_Amount;
                                 p13Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_LowerImpatienceReduction_Name":
-                                if (_configuration.Prestige_14_Amount < 0.0f) break;
+                                if (_configuration.Prestige_14_Amount < 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p14Model = (BonusReputationPenaltyPerReputationEffectModel)modifier.effect;
                                 p14Model.amount = _configuration.Prestige_14_Amount;
                                 p14Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_GlobalReputationTresholdIncrease_Name":
-                                if (_configuration.Prestige_15_Amount < 0) break;
+                                if (_configuration.Prestige_15_Amount < 0)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p15Model = (BonusGlobalReputationTresholdIncreaseEffectModel)modifier.effect;
                                 p15Model.amount = _configuration.Prestige_15_Amount;
                                 p15Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_AscensionHungerMultiplier_Name":
-                                if (_configuration.Prestige_17_Amount < 0) break;
+                                if (_configuration.Prestige_17_Amount < 0)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p17Model = (HungerMultiplierEffectModel)modifier.effect;
                                 p17Model.amount = _configuration.Prestige_17_Amount;
                                 p17Model.ConsumeAsNonPerk();
                                 break;
                             case "Effect_FasterFuelSacrifice_Name":
-                                if (_configuration.Prestige_18_Amount > 0.0f) break;
+                                if (_configuration.Prestige_18_Amount > 0.0f)
+                                {
+                                    modifier.effect.ConsumeAsNonPerk();
+                                    break;
+                                }
                                 var p18Model = (HearthSacraficeTimeEffectModel)modifier.effect;
                                 p18Model.amount = _configuration.Prestige_18_Amount;
                                 p18Model.ConsumeAsNonPerk();
@@ -344,8 +400,7 @@ namespace Josiwe.ATS.Cheats
         {
             if (!__instance.IsValidReputationGain(amount)
                 || _configuration == null
-                || _configuration.ReputationMutiplier < 0.0f
-                || _configuration.ReputationStopgap < 0)
+                || (_configuration.ReputationMutiplier < 0.0f && _configuration.ReputationStopgap <= 0))
                 return true; // run the original game method
 
             // it'd be nice if we could figure out when an archaeology dig site is available based off the buildings list
@@ -361,7 +416,7 @@ namespace Josiwe.ATS.Cheats
                                     ? (float)__instance.GetReputationToWin()
                                     : (float)__instance.GetReputationToWin() - _configuration.ReputationStopgap;
             // for debugging only (they spam the log)
-            //WriteLog($"Total: {__instance.GetReputationToWin()} - Type: {type} - Stopgap: {maxReputation}");
+            //WriteLog($"Reputation to win: {__instance.GetReputationToWin()} - Type: {type} - Stopgap: {maxReputation}");
             //WriteLog($"Reputation added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationSources[(int)type] += newAmount;
             __instance.State.reputation = Mathf.Clamp(__instance.State.reputation + newAmount, 0.0f, maxReputation);
@@ -377,18 +432,14 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         public static bool AddReputationPenalty_PrePatch(ReputationService __instance, float amount, ReputationChangeSource type, bool force, string reason = null)
         {
-            if (Mathf.Approximately(amount, 0.0f)
-                || !force
-                && __instance.IsGameFinished()
-                || _configuration == null
-                || _configuration.ImpatienceMultiplier < 0.0f
-                || _configuration.ImpatienceStopgap < 0)
+            if (_configuration == null
+                || (_configuration.ImpatienceMultiplier < 0.0f && _configuration.ImpatienceStopgap <= 0))
                 return true; // run the original game method
 
             var newAmount = amount * _configuration.ImpatienceMultiplier;
-            var maxImpatience = (float)__instance.GetReputationPenaltyToLoose() - _configuration.ReputationStopgap;
+            var maxImpatience = __instance.GetReputationPenaltyToLoose() - _configuration.ImpatienceStopgap;
             // for debugging only (they spam the log)
-            //WriteLog($"Total: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
+            //WriteLog($"Impatience to lose: {__instance.GetReputationPenaltyToLoose()} - Type: {type} - Forced? {force} - Stopgap: {maxImpatience}");
             //WriteLog($"Impatience added is: {newAmount}. Vanilla would've been: {amount}");
             __instance.State.reputationPenalty = Mathf.Clamp(__instance.State.reputationPenalty + newAmount, 0.0f, maxImpatience);
             __instance.ReputationPenalty.Value = __instance.State.reputationPenalty;
@@ -399,7 +450,7 @@ namespace Josiwe.ATS.Cheats
         }
         #endregion
 
-        #region Cornerstone Service Mods
+            #region Cornerstone Service Mods
         // Grants infinite cornerstone rerolls 
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GetRerollsLeft))]
         [HarmonyPrefix]
@@ -421,7 +472,12 @@ namespace Josiwe.ATS.Cheats
         {
             if (_configuration == null
                 || !_configuration.MoarSeasonRewards)
+            {
+                // DO NOT reset the bonus season rewards back to default LOL
+                // they get reset on new maps. this was just adding another bug...
+                //Serviceable.MetaStateService.Perks.bonusSeasonRewardsAmount = 0;
                 return true; // run the original method
+            }
 
             // when the model is null it's replaced with random model in the cornerstone service, this is my hacky patch
             if (model == null)
@@ -497,21 +553,20 @@ namespace Josiwe.ATS.Cheats
         [HarmonyPrefix]
         private static bool PrepareInitialPoints_PrePatch(ReputationRewardsService __instance)
         {
-            if (_configuration == null
+            if (__instance.State.initialReputationPicksGranted
+                || _configuration == null
                 || !_configuration.WildcardBlueprints
                 || _configuration.BlueprintsMultiplier < 0
                 || MB.TutorialService.IsAnyTutorial(GameMB.Biome))
                 return true; // run the original game method
 
             WriteLog("WildcardBlueprints: " + _configuration.WildcardBlueprints.ToString());
-            //WriteLog("Initial Reputation Picks Granted: " + __instance.State.initialReputationPicksGranted.ToString());
+            WriteLog("Initial Reputation Picks Granted: " + __instance.State.initialReputationPicksGranted.ToString());
 
-            if (__instance.State.initialReputationPicksGranted == false)
-            {
-                __instance.State.initialReputationPicksGranted = true;
-                WriteLog($"Generating {_configuration.BlueprintsMultiplier} wildcard blueprint picks");
-                Serviceable.EffectsService.GrantWildcardPick(_configuration.BlueprintsMultiplier);
-            }
+            __instance.State.initialReputationPicksGranted = true;
+            WriteLog($"Generating {_configuration.BlueprintsMultiplier} wildcard blueprint picks");
+            Serviceable.EffectsService.GrantWildcardPick(_configuration.BlueprintsMultiplier);
+            __instance.State.lastGrantedReputationReward -= __instance.ReputationConfig.initialReputationRewards;
 
             return false; // do not run the original game method
         }
