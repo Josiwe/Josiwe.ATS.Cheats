@@ -4,7 +4,7 @@
     "ZoomMultiplier": 1.0,
     "AllRacesInWorldMap": false,
     "BonusPreparationPoints": 0,
-
+  
 
     "Game Map": "Where you build, explore and forage",
 
@@ -20,7 +20,7 @@
     "BlueprintsMultiplier": 1,
     "CashRewardMultiplier": 1,
     "CornerstonePicksPerSeason": 1,
-
+    "EnableAllBuildingsMoving": false,
 
     "Season Rewards": "Odd planet, it only has 3 seasons...",
 

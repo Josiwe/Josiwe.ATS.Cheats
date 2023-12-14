@@ -2,18 +2,18 @@ using BepInEx;
 using Eremite;
 using Eremite.Controller;
 using Eremite.Model;
+using Eremite.Model.Effects;
+using Eremite.Model.State;
 using Eremite.Services;
+using Eremite.Services.Meta;
+using Eremite.Services.World;
+using Eremite.View.Cameras;
 using HarmonyLib;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Eremite.View.Cameras;
 using UnityEngine;
-using System;
-using Eremite.Model.State;
-using Eremite.Services.Meta;
-using Eremite.Model.Effects;
-using Newtonsoft.Json;
-using Eremite.Services.World;
 
 namespace Josiwe.ATS.Cheats
 {
@@ -711,6 +711,16 @@ namespace Josiwe.ATS.Cheats
             // So just use Harmony and save us all some time. This method will run after every game start
             var isNewGame = MB.GameSaveService.IsNewGame();
             WriteLog($"Entered a game. Is this a new game? {isNewGame}.");
+
+            // if config is enabled, we're not in a tutorial, and the value is not already set
+            if (_configuration != null 
+                && !MB.TutorialService.IsAnyTutorial(GameMB.Biome) 
+                && _configuration.EnableAllBuildingsMoving
+                && !Serviceable.EffectsService.IsMovingAllBuildingsEnabled())
+            {
+                // Enable moving all buildings
+                Serviceable.EffectsService.EnableAllBuildingsMoving("josiwe");
+            }   
         }
         #endregion
 

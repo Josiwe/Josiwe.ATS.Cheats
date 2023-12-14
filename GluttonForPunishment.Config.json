@@ -1,7 +1,7 @@
 {
     "WorldMap": "Where you pick a tile to start a settlement in",
 
-    "ZoomMultiplier": 7.0,
+    "ZoomMultiplier": 1.0,
     "AllRacesInWorldMap": false,
     "BonusPreparationPoints": 0,
 
@@ -20,6 +20,7 @@
     "BlueprintsMultiplier": 1,
     "CashRewardMultiplier": 0,
     "CornerstonePicksPerSeason": 1,
+    "EnableAllBuildingsMoving": false,
 
 
     "Season Rewards": "Odd planet, it only has 3 seasons...",

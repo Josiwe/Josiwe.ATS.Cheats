@@ -10,6 +10,7 @@ namespace Josiwe.ATS.Cheats
         public int BonusPreparationPoints { get; set; } = 0;
         #endregion
 
+
         #region Game Map
         public bool WildcardBlueprints { get; set; } = false;
         public bool InfiniteCornerstoneRerolls { get; set; } = false;
@@ -23,6 +24,7 @@ namespace Josiwe.ATS.Cheats
         public int BlueprintsMultiplier { get; set; } = 1;
         public int CashRewardMultiplier { get; set; } = 1;
         public int CornerstonePicksPerSeason { get; set; } = 1;
+        public bool EnableAllBuildingsMoving { get; set; } = false;
         #endregion
 
         #region Season Rewards
@@ -38,7 +40,7 @@ namespace Josiwe.ATS.Cheats
         public float Prestige_2_Amount { get; set; } = 1.0f;
         // Higher Blueprints Reroll Cost - The Archivist assigned to your settlement is fiercely loyal to the Royal Court, so bribing him will be more expensive. Blueprint rerolls cost 10 Amber more.
         public int Prestige_4_Amount { get; set; } = 10;
-        // Faster Leaving - Villagers are less understanding than they used to be. They’re probably getting a bit spoiled by now. Villagers are 100% faster to leave if they have low Resolve.
+        // Faster Leaving - Villagers are less understanding than they used to be. Theyâ€™re probably getting a bit spoiled by now. Villagers are 100% faster to leave if they have low Resolve.
         public float Prestige_5_Amount { get; set; } = 1.0f;
         // Wet Soil - It's particularly hard to build anything in this region. Buildings require 50% more materials.
         public float Prestige_6_Amount { get; set; } = 0.5f;
