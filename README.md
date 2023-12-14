@@ -118,6 +118,12 @@ Here you'll find a detailed description of the type and effect of each setting i
 - Integer: _accepts any positive whole number greater than zero (i.e. 1, 3, 5)_
 - when set to any number greater than one, will allow a user to pick more cornerstones per season
 - setting this to 1 uses the game's default logic
+
+**EnableAllBuildingsMoving**
+- Boolean: _accepts true or false_
+- When set to true, most buildings can be moved allowing the user to tweak the layout of their empire.
+- setting this to false uses the game's default logic
+- uncertain how this will act if the world map feature which grants it is used at the same time
 <br>
 
 ## Seasonal:
